@@ -1,0 +1,27 @@
+{
+  "name": "find-my-hotel-api",
+  "version": "1.0.0",
+  "description": "this the backend of find-my-hotel",
+  "main": "src/index.ts",
+  "author": "Nayan-kr-Bera <nayanbera92gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon --legacy-watch src/index.ts",
+    "build": "tsc --project .",
+    "start": "node dist/index.js",
+    "generate": "drizzle-kit generate --config ./src/drizzle.config.ts",
+    "migrate": "drizzle-kit migrate --config ./src/drizzle.config.ts",
+    "studio": "drizzle-kit studio --config ./src/drizzle.config.ts"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "ts-node": "^10.9.2"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.30.4",
+    "eslint": "^9.20.1",
+    "prettier": "^3.5.0",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.24.0"
+  }
+}
