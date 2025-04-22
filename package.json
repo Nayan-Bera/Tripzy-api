@@ -14,7 +14,9 @@
     "studio": "drizzle-kit studio --config ./src/drizzle.config.ts"
   },
   "dependencies": {
+    "drizzle-orm": "^0.42.0",
     "express": "^4.21.2",
+    "postgres": "^3.4.5",
     "ts-node": "^10.9.2"
   },
   "devDependencies": {
