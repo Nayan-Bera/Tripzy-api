@@ -14,6 +14,7 @@ const userDetails = pgTable('user-details', {
         onDelete: 'cascade',
         onUpdate: 'no action',
     }),
+    pan_number:varchar('pan_number').notNull(),
    
     createdAt: timestamp('created_at', { mode: 'string' })
         .notNull()
