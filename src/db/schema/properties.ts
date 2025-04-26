@@ -19,7 +19,6 @@ const properties = pgTable('properties', {
     property_category: varchar('property_category', {
         enum: ['hotel', 'apertment ', 'villa', 'homestay'],
     }).notNull(),
-    property_type: varchar('property_type').notNull(),
     price: varchar('price').notNull(),
     location: varchar('location').notNull(),
     latitude: varchar('latitude').notNull(),
