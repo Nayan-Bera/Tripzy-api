@@ -7,6 +7,10 @@ import {
     boolean,
     integer
 } from 'drizzle-orm/pg-core';
+import properties from './properties';
+import { relations } from 'drizzle-orm';
+import roomImages from './roomsImages';
+import { bookings } from './booking';
 export const rooms = pgTable('rooms', {
     id: uuid('id').defaultRandom().primaryKey().notNull(),
     propertyId: uuid('property_id')

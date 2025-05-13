@@ -6,8 +6,11 @@ import {
     uuid,
     varchar,
 } from 'drizzle-orm/pg-core';
+import userDetails from './userDetails';
+import properties from './properties';
+import { bookings } from './booking';
 
-export const user = pgTable('users', {
+ const user = pgTable('users', {
     id: uuid('id').defaultRandom().primaryKey(),
     fullname: varchar('fullname').notNull(),
     email: varchar('email').notNull().unique(),
@@ -41,3 +44,6 @@ export const userRelations = relations(user, ({ one, many }) => ({
     coupons: many(userCoupons),
     notifications: many(notifications),
 }));
+
+
+export default user;

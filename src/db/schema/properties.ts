@@ -8,6 +8,8 @@ import {
     boolean,
 } from 'drizzle-orm/pg-core';
 import user from './user';
+import { rooms } from './rooms';
+import propertyImages from './PropertiesImages';
 // import favorites from './favorites';
 // import propertyImages from './propertyImages';
 // import leads from './leads';

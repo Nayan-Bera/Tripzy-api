@@ -6,7 +6,8 @@ import {
     uuid,
     varchar,
 } from 'drizzle-orm/pg-core';
-export const roomImages = pgTable('room_images', {
+import { rooms } from './rooms';
+ const roomImages = pgTable('room_images', {
     id: uuid('id').defaultRandom().primaryKey().notNull(),
     roomId: uuid('room_id')
         .references(() => rooms.id, {
@@ -31,3 +32,5 @@ export const roomImagesRelations = relations(roomImages, ({ one }) => ({
         references: [rooms.id],
     }),
 }));
+
+export default roomImages;
