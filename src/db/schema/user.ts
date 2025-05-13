@@ -9,6 +9,10 @@ import {
 import userDetails from './userDetails';
 import properties from './properties';
 import { bookings } from './booking';
+import payments from './payments';
+import reviews from './review';
+import favorites from './favourites';
+import userCoupons from './userCoupons';
 
  const user = pgTable('users', {
     id: uuid('id').defaultRandom().primaryKey(),

@@ -4,11 +4,15 @@ import {
     timestamp,
     uuid,
     varchar,
+    integer
 } from 'drizzle-orm/pg-core';
-import { user } from './user';
 import properties from './properties';
 import { rooms } from './rooms';
-export const bookings = pgTable('bookings', {
+import reviews from './review';
+import payments from './payments';
+import coupons from './coupons';
+import user from './user';
+ const bookings = pgTable('bookings', {
     id: uuid('id').defaultRandom().primaryKey().notNull(),
     userId: uuid('user_id')
         .references(() => user.id, {
@@ -77,3 +81,4 @@ export const bookingsRelations = relations(bookings, ({ one, many }) => ({
         references: [coupons.id],
     }),
 }));
+export default bookings;

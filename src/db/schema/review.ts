@@ -7,9 +7,9 @@ import {
     uuid,
     varchar
 } from 'drizzle-orm/pg-core';
-import { bookings } from './booking';
 import properties from './properties';
 import user from './user';
+import bookings from './booking';
 const reviews = pgTable('reviews', {
     id: uuid('id').defaultRandom().primaryKey().notNull(),
     userId: uuid('user_id')

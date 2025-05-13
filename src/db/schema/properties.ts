@@ -6,13 +6,14 @@ import {
     uuid,
     varchar,
     boolean,
+    integer
 } from 'drizzle-orm/pg-core';
 import user from './user';
 import { rooms } from './rooms';
 import propertyImages from './PropertiesImages';
-// import favorites from './favorites';
-// import propertyImages from './propertyImages';
-// import leads from './leads';
+import reviews from './review';
+import favorites from './favourites';
+
 export const properties = pgTable('properties', {
     id: uuid('id').defaultRandom().primaryKey().notNull(),
     title: varchar('title').notNull(),
