@@ -8,11 +8,12 @@ import {
 } from 'drizzle-orm/pg-core';
 import userDetails from './userDetails';
 import properties from './properties';
-import { bookings } from './booking';
 import payments from './payments';
 import reviews from './review';
 import favorites from './favourites';
 import userCoupons from './userCoupons';
+import notifications from './notifications';
+import bookings from './booking';
 
  const user = pgTable('users', {
     id: uuid('id').defaultRandom().primaryKey(),
