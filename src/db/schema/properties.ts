@@ -1,4 +1,4 @@
-import { is, relations } from 'drizzle-orm';
+import {  relations } from 'drizzle-orm';
 import {
     jsonb,
     pgTable,
@@ -11,15 +11,13 @@ import user from './user';
 // import favorites from './favorites';
 // import propertyImages from './propertyImages';
 // import leads from './leads';
-
-const properties = pgTable('properties', {
+export const properties = pgTable('properties', {
     id: uuid('id').defaultRandom().primaryKey().notNull(),
     title: varchar('title').notNull(),
     description: varchar('description').notNull(),
     property_category: varchar('property_category', {
-        enum: ['hotel', 'apertment ', 'villa', 'homestay'],
+        enum: ['hotel', 'apartment', 'villa', 'homestay', 'resort', 'guest_house'],
     }).notNull(),
-    price: varchar('price').notNull(),
     location: varchar('location').notNull(),
     latitude: varchar('latitude').notNull(),
     longitude: varchar('longitude').notNull(),
@@ -34,13 +32,15 @@ const properties = pgTable('properties', {
             onUpdate: 'no action',
         }),
     status: varchar('status', {
-        enum: ['active', 'inactive', 'sold', 'deleted', 'rejected'],
+        enum: ['active', 'inactive', 'sold', 'deleted', 'rejected', 'maintenance'],
     }).default('inactive'),
     rejectedDescription: varchar('rejected_description'),
-    details: jsonb('details').notNull(),
+    details: jsonb('details').notNull(), // Amenities, rules, cancellation policy, etc.
     isFeatured: boolean('is_featured').default(false),
     is_verified: boolean('is_verified').default(false),
     isApproved: boolean('is_approved').default(false),
+    avgRating: integer('avg_rating').default(0),
+    totalReviews: integer('total_reviews').default(0),
     createdAt: timestamp('created_at', { mode: 'string' })
         .notNull()
         .defaultNow(),
@@ -50,14 +50,14 @@ const properties = pgTable('properties', {
 });
 
 export const propertiesRelations = relations(properties, ({ one, many }) => ({
-    user: one(user, {
+    owner: one(user, {
         fields: [properties.ownerId],
         references: [user.id],
     }),
-    // favorites: many(favorites),
-    // propertybookings: many(propertybookings),
-    // propertyImages: many(propertyImages),
-    // leads: many(leads),
+    rooms: many(rooms),
+    propertyImages: many(propertyImages),
+    reviews: many(reviews),
+    favorites: many(favorites),
 }));
 
 export default properties;

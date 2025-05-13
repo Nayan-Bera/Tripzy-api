@@ -8,14 +8,14 @@ import {
 } from 'drizzle-orm/pg-core';
 import user from './user';
 
-const userDetails = pgTable('user_details', {
+export const userDetails = pgTable('user_details', {
     id: uuid('id').defaultRandom().primaryKey(),
     user_id: uuid('user_id')
         .notNull()
         .references(() => user.id, {
             onDelete: 'cascade',
             onUpdate: 'no action',
-        }),
+        }).unique(),
     pan_number: varchar('pan_number'),
     gst_number: varchar('gst_number'),
     passport_number: varchar('passport_number'),
@@ -26,14 +26,14 @@ const userDetails = pgTable('user_details', {
     country: varchar('country'),
     pincode: varchar('pincode'),
     is_verified: boolean('is_verified').default(false),
-    documents: varchar('documents'),  // Corrected spelling from 'ducuments'
+    documents: varchar('documents'),
     documents_type: varchar('documents_type', {
         enum: ['pan', 'aadhar', 'passport', 'driving_license', 'voter_id'],
     }),
-    // Biometric data for ID-less check-in (securely encrypted)
-    face_template: varchar('face_template'),
-    fingerprint_template: varchar('fingerprint_template'),
-    biometric_verified: boolean('biometric_verified').default(false),
+    digital_verification_status: varchar('digital_verification_status', {
+        enum: ['pending', 'verified', 'rejected', 'not_submitted'],
+    }).default('not_submitted'),
+    verification_notes: varchar('verification_notes'),
     createdAt: timestamp('created_at', { mode: 'string' })
         .notNull()
         .defaultNow(),
@@ -42,11 +42,13 @@ const userDetails = pgTable('user_details', {
         .defaultNow(),
 });
 
-export const userDetailsRelations = relations(userDetails, ({ one, many }) => ({
+export const userDetailsRelations = relations(userDetails, ({ one }) => ({
     user: one(user, {
         fields: [userDetails.user_id],
         references: [user.id],
     }),
 }));
+
+
 
 export default userDetails;

@@ -1,12 +1,15 @@
 import { relations } from 'drizzle-orm';
-import { pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
-import user from './user';
-import properties from './properties';
-
-export const propertyImages = pgTable('property_images', {
+import {
+    boolean,
+    pgTable,
+    timestamp,
+    uuid,
+    varchar,
+} from 'drizzle-orm/pg-core';
+export const roomImages = pgTable('room_images', {
     id: uuid('id').defaultRandom().primaryKey().notNull(),
-    propertyId: uuid('property_id')
-        .references(() => properties.id, {
+    roomId: uuid('room_id')
+        .references(() => rooms.id, {
             onDelete: 'cascade',
             onUpdate: 'no action',
         })
@@ -22,11 +25,9 @@ export const propertyImages = pgTable('property_images', {
         .defaultNow(),
 });
 
-export const propertyImagesRelations = relations(propertyImages, ({ one }) => ({
-    property: one(properties, {
-        fields: [propertyImages.propertyId],
-        references: [properties.id],
+export const roomImagesRelations = relations(roomImages, ({ one }) => ({
+    room: one(rooms, {
+        fields: [roomImages.roomId],
+        references: [rooms.id],
     }),
-}));;
-
-export default propertyImages;
+}));
