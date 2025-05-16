@@ -7,11 +7,11 @@ import {
     integer
 } from 'drizzle-orm/pg-core';
 import properties from './properties';
-import { rooms } from './rooms';
 import reviews from './review';
 import payments from './payments';
 import coupons from './coupons';
 import user from './user';
+import rooms from './rooms';
  const bookings = pgTable('bookings', {
     id: uuid('id').defaultRandom().primaryKey().notNull(),
     userId: uuid('user_id')
