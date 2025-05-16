@@ -8,7 +8,7 @@ import {
     integer,
     jsonb
 } from 'drizzle-orm/pg-core';
-import { rooms } from './rooms';
+import rooms from './rooms';
  const roomAvailability = pgTable('room_availability', {
     id: uuid('id').defaultRandom().primaryKey().notNull(),
     roomId: uuid('room_id')
@@ -38,4 +38,5 @@ export const roomAvailabilityRelations = relations(roomAvailability, ({ one }) =
         references: [rooms.id],
     }),
 }));
+
 export default roomAvailability;

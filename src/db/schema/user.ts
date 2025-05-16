@@ -50,5 +50,4 @@ export const userRelations = relations(user, ({ one, many }) => ({
     notifications: many(notifications),
 }));
 
-
 export default user;

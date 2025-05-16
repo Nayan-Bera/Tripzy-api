@@ -6,7 +6,7 @@ import {
     uuid,
     varchar,
 } from 'drizzle-orm/pg-core';
-import { rooms } from './rooms';
+import rooms from './rooms';
  const roomImages = pgTable('room_images', {
     id: uuid('id').defaultRandom().primaryKey().notNull(),
     roomId: uuid('room_id')
