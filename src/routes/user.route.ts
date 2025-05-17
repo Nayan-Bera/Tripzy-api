@@ -1,9 +1,5 @@
 import { Router } from 'express';
 import userController from '../controller/user.controller';
-import verificationController from '../controller/verification.controller';
-import roomController from '../controller/room.controller';
-import bookingController from '../controller/booking.controller';
-
 
 const router = Router();
 router.post('/register', userController.register);
