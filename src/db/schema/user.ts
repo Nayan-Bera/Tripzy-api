@@ -14,6 +14,7 @@ import favorites from './favourites';
 import userCoupons from './userCoupons';
 import notifications from './notifications';
 import bookings from './booking';
+import emailOtp from './emailOtp';
 
  const user = pgTable('users', {
     id: uuid('id').defaultRandom().primaryKey(),
@@ -48,6 +49,7 @@ export const userRelations = relations(user, ({ one, many }) => ({
     favorites: many(favorites),
     coupons: many(userCoupons),
     notifications: many(notifications),
+    emailotp:one(emailOtp)
 }));
 
 export default user;

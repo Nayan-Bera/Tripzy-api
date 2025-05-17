@@ -12,4 +12,6 @@ export {default as rooms} from './rooms';
 export {default as roomImages} from './roomsImages';
 export {default as roomAvailability} from './roomavailable';
 export {default as offers} from './offers';
-export {default as digitalVerification} from './digitelverification';``
+export {default as digitalVerification} from './digitelverification';
+export {default as coupons} from './coupons';
+export {default as emailOtp} from './emailOtp';
