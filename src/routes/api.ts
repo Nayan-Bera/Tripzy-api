@@ -19,7 +19,4 @@ router.post('/rooms/check-availability', roomController.checkAvailability);
 router.get('/rooms/:id', roomController.getRoomDetails);
 router.post('/rooms/calculate-price', roomController.calculatePrice);
 
-// Booking routes
-
-
-export default router; 
+export default router;

@@ -14,8 +14,14 @@
     "studio": "drizzle-kit studio --config ./src/drizzle.config.ts"
   },
   "dependencies": {
+    "@types/dotenv": "^8.2.3",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/nodemailer": "^6.4.17",
+    "dotenv": "^16.5.0",
     "drizzle-orm": "^0.42.0",
     "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^7.0.3",
     "postgres": "^3.4.5",
     "ts-node": "^10.9.2"
   },
