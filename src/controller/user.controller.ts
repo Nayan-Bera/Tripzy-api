@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import db from '../db';
-import { user as users, bookings, properties, favorites } from '../db/schema';
+import { user as users, bookings, properties, favorites, coupons } from '../db/schema';
 import ResponseHandler from '../utils/responseHandealer';
 import { userSchema } from '../validators/user.validator';
+import { and, eq, gt } from 'drizzle-orm';
 // import { userSchema, bookingSchema, profileEditSchema } from "../schemas/userSchemas";
 
 export const userController = {
@@ -25,8 +26,8 @@ export const userController = {
         try {
             const updated = await db
                 .update(users)
-                .set({ name, phone })
-                .where(users.id.eq(userId))
+                .set({ fullname: name, phone_number: phone })
+                .where(eq(users.id, userId))
                 .returning();
             res.status(200).send(
                 ResponseHandler(200, 'Profile updated', updated),
@@ -50,23 +51,36 @@ export const userController = {
     },
 
     async bookRoom(req: Request, res: Response, next: NextFunction) {
-        const { error } = bookingSchema.validate(req.body);
-        if (error) return next(error);
-
         const userId = req.user.id;
-        const { roomId, startDate, endDate, hours, bookingType } = req.body;
+        const {
+            roomId,
+            startDate,
+            endDate,
+            hours,
+            bookingType,
+            propertyId,
+            guestCount,
+            basePrice,
+            taxAmount,
+            totalAmount,
+        } = req.body;
 
         try {
             const booking = await db
                 .insert(bookings)
                 .values({
                     userId,
+                    propertyId,
                     roomId,
-                    startDate,
-                    endDate,
-                    hours,
+                    checkInDate: startDate,
+                    checkOutDate: endDate,
+                    hoursBooked: hours,
                     bookingType,
-                    status: 'booked',
+                    guestCount,
+                    basePrice,
+                    taxAmount,
+                    totalAmount,
+                    status: 'pending',
                 })
                 .returning();
 
@@ -80,7 +94,7 @@ export const userController = {
         const userId = req.user.id;
         try {
             const result = await db.query.bookings.findMany({
-                where: (b) => b.userId === userId,
+                where: eq(bookings.userId, userId),
             });
             res.status(200).send(
                 ResponseHandler(200, 'Bookings fetched', result),
@@ -98,7 +112,7 @@ export const userController = {
             const cancel = await db
                 .update(bookings)
                 .set({ status: 'cancelled' })
-                .where(bookings.id.eq(id).and(bookings.userId.eq(userId)))
+                .where(and(eq(bookings.id, id), eq(bookings.userId, userId)))
                 .returning();
             res.status(200).send(
                 ResponseHandler(200, 'Booking cancelled', cancel),
@@ -129,7 +143,7 @@ export const userController = {
         const { code } = req.body;
         try {
             const coupon = await db.query.coupons.findFirst({
-                where: (c) => c.code === code && c.expiryDate > new Date(),
+                where: and(eq(coupons.code, code), gt(coupons.endDate, new Date().toISOString()))
             });
             if (!coupon)
                 return res

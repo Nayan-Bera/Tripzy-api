@@ -1,5 +1,6 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
+import dotenv from 'dotenv';
 import {
     bookings,
     digitalVerification,
@@ -16,6 +17,7 @@ import {
     user,
     userCoupons,
     userdetails,
+    coupons,
 } from './schema';
 import { userRelations } from './schema/user';
 import { propertiesRelations } from './schema/properties';
@@ -48,6 +50,7 @@ const schema = {
     roomImages,
     roomAvailability,
     digitalVerification,
+    coupons,
     userRelations,
     propertiesRelations,
     roomsRelations,

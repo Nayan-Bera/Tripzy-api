@@ -10,6 +10,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import userCoupons from './userCoupons';
 import bookings from './booking';
+
  const coupons = pgTable('coupons', {
     id: uuid('id').defaultRandom().primaryKey().notNull(),
     code: varchar('code').notNull().unique(),
@@ -44,4 +45,5 @@ export const couponsRelations = relations(coupons, ({ many }) => ({
     bookings: many(bookings),
     userCoupons: many(userCoupons),
 }));
+
 export default coupons;
