@@ -1,4 +1,5 @@
 import Joi from "joi";
+
 export const userSchema = Joi.object({
     name: Joi.string().required(),
     email: Joi.string().email().required(),
@@ -8,4 +9,5 @@ export const userSchema = Joi.object({
     status: Joi.string().required(),
     createdAt: Joi.date().required(),
     updatedAt: Joi.date().required(),
-})
+});
+

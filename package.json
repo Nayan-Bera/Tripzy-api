@@ -14,10 +14,12 @@
     "studio": "drizzle-kit studio --config ./src/drizzle.config.ts"
   },
   "dependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/dotenv": "^8.2.3",
     "@types/joi": "^17.2.3",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/nodemailer": "^6.4.17",
+    "bcrypt": "^6.0.0",
     "dotenv": "^16.5.0",
     "drizzle-orm": "^0.42.0",
     "express": "^4.21.2",

@@ -9,5 +9,9 @@ export const config = {
     SMTP_SRC: process.env.SMTP_SRC,
     SMTP_MAIL: process.env.SMTP_MAIL,
     SMTP_PASSWORD: process.env.SMTP_PASSWORD,
-    DATABASE_URL: process.env.DATABASE_URL
+    DATABASE_URL: process.env.DATABASE_URL,
+    REFRESH_SECRET: process.env.REFRESH_SECRET || 'your_jwt_secret',
+    REFRESH_EXPIRES_IN: process.env.REFRESH_EXPIRES_IN || '1d',
+    SALT: process.env.SALT || 10,
+    
 }; 

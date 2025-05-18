@@ -18,6 +18,8 @@ import {
     userCoupons,
     userdetails,
     coupons,
+    emailOtp,
+    refreshToken,
 } from './schema';
 import { userRelations } from './schema/user';
 import { propertiesRelations } from './schema/properties';
@@ -51,6 +53,8 @@ const schema = {
     roomAvailability,
     digitalVerification,
     coupons,
+    emailOtp,
+    refreshToken,
     userRelations,
     propertiesRelations,
     roomsRelations,
