@@ -5,7 +5,7 @@ import { IJwtPayload } from '../@types/payload.type';
 class JwtService {
     static sign(
         payload: string | Buffer | object,
-        expiry: number | '1h' ,
+        expiry: number | '1h' | '1y',
         secret: string = config.ACCESS_SECRET,
     ): string {
         const options: SignOptions = { expiresIn: expiry };
