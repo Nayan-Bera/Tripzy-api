@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import db from "../db";
-import { bookings, digitalVerification, rooms, payments, coupons } from "../db/schema";
-import ResponseHandler from "../utils/responseHandealer";
+import db from "../../db";
+import { bookings, digitalVerification, rooms, payments, coupons } from "../../db/schema";
+import ResponseHandler from "../../utils/responseHandealer";
 import { and, eq, gt } from "drizzle-orm";
 
 export const bookingController = {

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import db from "../db";
-import { digitalVerification } from "../db/schema";
-import ResponseHandler from "../utils/responseHandealer";
+import db from "../../db";
+import { digitalVerification } from "../../db/schema";
+import ResponseHandler from "../../utils/responseHandealer";
 import { eq, and, gt } from "drizzle-orm";
 
 export const verificationController = {

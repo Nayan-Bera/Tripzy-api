@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import db from "../db";
-import { rooms, roomImages, bookings } from "../db/schema";
-import ResponseHandler from "../utils/responseHandealer";
+import db from "../../db";
+import { rooms, roomImages, bookings } from "../../db/schema";
+import ResponseHandler from "../../utils/responseHandealer";
 import { and, eq, gt, lt, lte, gte, or, not, inArray } from "drizzle-orm";
 
 export const roomController = {

@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import db from '../db';
-import { user as users, bookings, properties, favorites, coupons } from '../db/schema';
-import ResponseHandler from '../utils/responseHandealer';
-import { userSchema } from '../validators/user.validator';
+import db from '../../db';
+import { user as users, bookings, properties, favorites, coupons } from '../../db/schema';
+import ResponseHandler from '../../utils/responseHandealer';
+import { userSchema } from '../../validators/user.validator';
 import { and, eq, gt } from 'drizzle-orm';
 // import { userSchema, bookingSchema, profileEditSchema } from "../schemas/userSchemas";
 
