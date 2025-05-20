@@ -5,8 +5,11 @@ import ResponseHandler from "../../utils/responseHandealer";
 import { and, eq, gt } from "drizzle-orm";
 
 export const bookingController = {
-  async createBooking(req: Request, res: Response, next: NextFunction) {
-    const userId = req.user.id;
+  async createBooking(req: any, res: Response, next: NextFunction) {
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).send(ResponseHandler(401, "User not authenticated"));
+    }
     const {
       roomId,
       checkInDate,
@@ -144,9 +147,9 @@ export const bookingController = {
     }
   },
 
-  async getBookingDetails(req: Request, res: Response, next: NextFunction) {
+  async getBookingDetails(req: any, res: Response, next: NextFunction) {
     const { id } = req.params;
-    const userId = req.user.id;
+    const userId = req.user?.id;
 
     try {
       const booking = await db.query.bookings.findFirst({
