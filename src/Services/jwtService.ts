@@ -1,11 +1,11 @@
 import jwt, { JwtPayload, SignOptions } from 'jsonwebtoken';
-import { config } from '../config/index';
 import { IJwtPayload } from '../@types/payload.type';
+import { config } from '../config/index';
 
 class JwtService {
     static sign(
         payload: string | Buffer | object,
-        expiry: number | '1h' | '1y',
+        expiry: SignOptions['expiresIn'] = '1hr',
         secret: string = config.ACCESS_SECRET,
     ): string {
         const options: SignOptions = { expiresIn: expiry };
