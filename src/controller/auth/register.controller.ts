@@ -41,13 +41,9 @@ const registerController = {
                 );
             }
        
-            const { fullname, email, password, role, phone_number }: any =
-                req.body;
+            const { fullname, email, password, role, phone_number }: any = req.body;
 
-            const hashedPassword = await bcrypt.hash(
-                password,
-                Number(config.SALT),
-            );
+            const hashedPassword = await bcrypt.hash(password, Number(config.SALT));
 
             const [saveUser] = await db
                 .insert(user)
@@ -57,7 +53,6 @@ const registerController = {
                     password: hashedPassword,
                     role,
                     phone_number,
-                    // avatar:cloudnaryResponse?.url || ''
                 })
                 .returning({
                     id: user.id,
@@ -67,7 +62,8 @@ const registerController = {
                     email_verified: user.email_verified,
                 });
 
-            OtpService({ id: saveUser.id, email: saveUser.email }, res, next);
+       // Send OTP after successful registration
+         OtpService({ id: saveUser.id, email: saveUser.email }, res, next);
 
             const access_token = JwtService.sign({
                 id: saveUser.id,
@@ -84,7 +80,9 @@ const registerController = {
                 token: refresh_token,
             });
 
-            return res.status(201).send(
+           
+
+            res.status(201).send(
                 ResponseHandler(201, 'success', {
                     name: saveUser.fullname,
                     email: saveUser.email,
@@ -95,8 +93,7 @@ const registerController = {
                 }),
             );
         } catch (error) {
-         
-            return next(error);
+            next(error);
         }
     },
 };
