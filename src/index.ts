@@ -6,9 +6,10 @@ import passport from 'passport';
 import { config } from './config';
 
 import './services/googleStrategy';
-import responseData from './services/responseData';
 import setTokensCookies from './Services/setTokencookies';
 import errorHandler from './Services/errorhandler';
+import { bookingRoutes, userRoutes } from './routes';
+import responseData from './Services/responseData';
 
 
 const app: Express = express();
@@ -42,7 +43,8 @@ app.get('/healthcheck', (req: Request, res: Response) => {
         timestamp: Date.now(),
     });
 });
-
+app.use('/api/v1/user', userRoutes);
+app.use('/api/v1/booking', bookingRoutes);
 /* ----------------all routes---------------- */
 
 app.get(

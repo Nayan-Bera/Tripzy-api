@@ -1,13 +1,9 @@
-import { Router } from 'express';
-import userController from '../controller/user.controller';
+import express, { RequestHandler } from 'express';
+import auth from '../middleware/auth';
+import { userController } from '../controller';
 
-const router = Router();
-router.post('/register', userController.register);
-router.post('/login', userController.login);
-router.get('/profile', userController.getProfile);
-router.put('/profile',  userController.editProfile);
-router.get('/bookings',  userController.getBookings);
-router.post('/favorites',  userController.addToFavorites);
-router.post('/apply-coupon',  userController.applyCoupon);
+const router = express.Router();
+
+router.get('/profile', auth, userController.getProfile as RequestHandler);
 
 export default router;

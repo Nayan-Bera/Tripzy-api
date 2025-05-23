@@ -1,14 +1,14 @@
 import bcrypt from 'bcrypt';
 import { eq } from 'drizzle-orm';
 import { NextFunction, Request, Response } from 'express';
-import { config } from '../../config';
-import { registerSchema } from '../../validators/auth.validator';
-import { refreshToken, user } from '../../db/schema';
-import CustomErrorHandler from '../../Services/customErrorHandaler';
-import db from '../../db';
-import JwtService from '../../Services/jwtService';
-import OtpService from '../../Services/emailOtpService';
-import ResponseHandler from '../../utils/responseHandealer';
+import { config } from '../../../config';
+import { registerSchema } from '../../../validators/auth.validator';
+import { refreshToken, user } from '../../../db/schema';
+import CustomErrorHandler from '../../../Services/customErrorHandaler';
+import db from '../../../db';
+import JwtService from '../../../Services/jwtService';
+import OtpService from '../../../Services/emailOtpService';
+import ResponseHandler from '../../../utils/responseHandealer';
 
 
 const registerController = {

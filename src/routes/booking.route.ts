@@ -1,10 +1,11 @@
-import { Router } from 'express';
-import bookingController from '../controller/booking.controller';
+import { bookingController } from '../controller';
+import express, { RequestHandler } from 'express';
+import auth from '../middleware/auth';
 
+const router = express.Router();
 
-const router = Router();
-router.post('/bookings',  bookingController.createBooking)
-.get('/bookings/:id',  bookingController.getBookingDetails)
-.put('/bookings/:id/status',  bookingController.updateBookingStatus);
+router.post('/bookings', auth, bookingController.createBooking as RequestHandler);
+router.get('/bookings/:id', auth, bookingController.getBookingDetails as RequestHandler);
+router.put('/bookings/:id/status', auth, bookingController.updateBookingStatus as RequestHandler);
 
 export default router;

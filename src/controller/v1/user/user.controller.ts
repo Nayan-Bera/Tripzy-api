@@ -1,14 +1,17 @@
-import { Request, Response, NextFunction } from 'express';
-import db from '../../db';
-import { user as users, bookings, properties, favorites, coupons } from '../../db/schema';
-import ResponseHandler from '../../utils/responseHandealer';
-import { userSchema } from '../../validators/user.validator';
 import { and, eq, gt } from 'drizzle-orm';
+import { NextFunction, Request, Response } from 'express';
+import db from '../../../db';
+import { coupons, favorites, properties, user as users } from '../../../db/schema';
+import ResponseHandler from '../../../utils/responseHandealer';
 // import { userSchema, bookingSchema, profileEditSchema } from "../schemas/userSchemas";
 
-export const userController = {
+const userController = {
+    
     async getProfile(req: Request, res: Response, next: NextFunction) {
-        const userId = req.user.id;
+        const userId = (req as any).user?.id;
+        if (!userId) {
+            return res.status(401).send(ResponseHandler(401, "User not authenticated"));
+        }
         try {
             const user = await db.query.user.findFirst({
                 where: eq(users.id, userId),
@@ -20,7 +23,10 @@ export const userController = {
     },
 
     async editProfile(req: Request, res: Response, next: NextFunction) {
-        const userId = req.user.id;
+        const userId = (req as any).user?.id;
+        if (!userId) {
+            return res.status(401).send(ResponseHandler(401, "User not authenticated"));
+        }
         const { name, phone } = req.body;
 
         try {
@@ -50,80 +56,11 @@ export const userController = {
         }
     },
 
-    async bookRoom(req: Request, res: Response, next: NextFunction) {
-        const userId = req.user.id;
-        const {
-            roomId,
-            startDate,
-            endDate,
-            hours,
-            bookingType,
-            propertyId,
-            guestCount,
-            basePrice,
-            taxAmount,
-            totalAmount,
-        } = req.body;
-
-        try {
-            const booking = await db
-                .insert(bookings)
-                .values({
-                    userId,
-                    propertyId,
-                    roomId,
-                    checkInDate: startDate,
-                    checkOutDate: endDate,
-                    hoursBooked: hours,
-                    bookingType,
-                    guestCount,
-                    basePrice,
-                    taxAmount,
-                    totalAmount,
-                    status: 'pending',
-                })
-                .returning();
-
-            res.status(201).send(ResponseHandler(201, 'Room booked', booking));
-        } catch (err) {
-            next(err);
-        }
-    },
-
-    async getBookings(req: Request, res: Response, next: NextFunction) {
-        const userId = req.user.id;
-        try {
-            const result = await db.query.bookings.findMany({
-                where: eq(bookings.userId, userId),
-            });
-            res.status(200).send(
-                ResponseHandler(200, 'Bookings fetched', result),
-            );
-        } catch (err) {
-            next(err);
-        }
-    },
-
-    async cancelBooking(req: Request, res: Response, next: NextFunction) {
-        const { id } = req.params;
-        const userId = req.user.id;
-
-        try {
-            const cancel = await db
-                .update(bookings)
-                .set({ status: 'cancelled' })
-                .where(and(eq(bookings.id, id), eq(bookings.userId, userId)))
-                .returning();
-            res.status(200).send(
-                ResponseHandler(200, 'Booking cancelled', cancel),
-            );
-        } catch (err) {
-            next(err);
-        }
-    },
-
     async addToFavorites(req: Request, res: Response, next: NextFunction) {
-        const userId = req.user.id;
+        const userId = (req as any).user?.id;
+        if (!userId) {
+            return res.status(401).send(ResponseHandler(401, "User not authenticated"));
+        }
         const { propertyId } = req.body;
 
         try {
