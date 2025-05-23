@@ -6,177 +6,172 @@ import {
   rooms,
   payments,
   coupons,
+  identityVerification,
 } from '../../../db/schema';
-import { and, eq, gt } from 'drizzle-orm';
+import { and, eq, gt, desc, gte, lte, or } from 'drizzle-orm';
 import CustomErrorHandler from '../../../Services/customErrorHandaler';
 import ResponseHandler from '../../../utils/responseHandealer';
 import { IUserRequestBody } from '../../../@types/user.types';
+import { AuthenticatedRequest } from '../../../types/express';
 
 interface AuthenticatedRequest extends Request {
-  user: IUserRequestBody;
+  user?: IUserRequestBody;
+}
+
+interface Booking {
+  id: string;
+  userId: string;
+  propertyId: string;
+  roomId: string;
+  bookingType: 'hourly' | 'daily' | 'custom';
+  checkInDate: string;
+  checkOutDate: string;
+  hoursBooked: number;
+  daysBooked: number;
+  guestCount: number;
+  basePrice: number;
+  taxAmount: number;
+  discountAmount: number;
+  totalAmount: number;
+  status: 'pending' | 'confirmed' | 'checked_in' | 'checked_out' | 'cancelled' | 'no_show';
+  paymentStatus: 'pending' | 'partial' | 'paid' | 'refunded' | 'failed';
+  specialRequests?: string;
+  couponId?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 const bookingController = {
   async createBooking(req: AuthenticatedRequest, res: Response, next: NextFunction) {
-    const userId = req.user?.id;
-    if (!userId) {
-      next(CustomErrorHandler.unAuthorized());
-      return;
-    }
-
-    const {
-      roomId,
-      checkInDate,
-      checkOutDate,
-      bookingType,
-      hours,
-      guestCount,
-      specialRequests,
-      couponId,
-    } = req.body;
-
     try {
-      const verification = await db.query.digitalVerification.findFirst({
-        where: and(
-          eq(digitalVerification.userId, userId),
-          eq(digitalVerification.status, 'verified'),
-          gt(digitalVerification.expiryDate, new Date().toISOString())
-        ),
-      });
+      const userId = req.user?.id;
+      if (!userId) {
+        return next(CustomErrorHandler.unAuthorized());
+      }
+
+      const {
+        propertyId,
+        roomId,
+        checkInDate,
+        checkOutDate,
+        guestCount,
+        bookingType,
+        hoursBooked,
+        daysBooked,
+        paymentMethod,
+        specialRequests,
+        couponId,
+      } = req.body;
+
+      // Check if user has verified identity
+      const [verification] = await db
+        .select()
+        .from(identityVerification)
+        .where(
+          and(
+            eq(identityVerification.userId, userId),
+            eq(identityVerification.verificationStatus, 'verified')
+          )
+        );
 
       if (!verification) {
         return next(
-          CustomErrorHandler.notFound('Please complete digital verification first')
+          CustomErrorHandler.notFound('Please complete identity verification first')
         );
       }
 
-      const room = await db.query.rooms.findFirst({
-        where: eq(rooms.id, roomId),
-      });
+      // Check room availability
+      const [room] = await db
+        .select()
+        .from(rooms)
+        .where(eq(rooms.id, roomId));
 
-      if (!room) return next(CustomErrorHandler.notFound('Room not found'));
-
-      let basePrice = 0;
-      let hours_booked = 0;
-      let days_booked = 0;
-
-      if (bookingType === 'hourly') {
-        if (!room.isHourlyBookingEnabled) {
-          return next(
-            CustomErrorHandler.invalid('Hourly booking not available for this room')
-          );
-        }
-
-        const minHours = room.minHoursBooking ?? 1;
-        const maxHours = room.maxHoursBooking ?? 24;
-
-        if (hours < minHours || hours > maxHours) {
-          return next(
-            CustomErrorHandler.invalid(
-              `Booking hours must be between ${minHours} and ${maxHours}`
-            )
-          );
-        }
-
-        basePrice = room.pricePerHour * hours;
-        hours_booked = hours;
-      } else if (bookingType === 'daily') {
-        const days =
-          Math.ceil(
-            (new Date(checkOutDate).getTime() - new Date(checkInDate).getTime()) /
-              (1000 * 60 * 60 * 24)
-          ) || 1;
-        basePrice = room.pricePerDay * days;
-        days_booked = days;
-      } else {
-        const totalHours =
-          Math.ceil(
-            (new Date(checkOutDate).getTime() - new Date(checkInDate).getTime()) /
-              (1000 * 60 * 60)
-          ) || 1;
-        const days = Math.floor(totalHours / 24);
-        const remainingHours = totalHours % 24;
-
-        basePrice = days * room.pricePerDay + remainingHours * room.pricePerHour;
-        days_booked = days;
-        hours_booked = remainingHours;
+      if (!room) {
+        return next(CustomErrorHandler.notFound('Room not found'));
       }
 
-      if (room.discount) {
-        basePrice -= Math.round(basePrice * (room.discount / 100));
-      }
-
-      let couponDiscount = 0;
-      if (couponId) {
-        const coupon = await db
-          .select()
-          .from(coupons)
-          .where(
-            and(
-              eq(coupons.id, couponId),
-              gt(coupons.endDate, new Date().toISOString())
+      // Check for overlapping bookings
+      const overlappingBookings = await db
+        .select()
+        .from(bookings)
+        .where(
+          and(
+            eq(bookings.roomId, roomId),
+            eq(bookings.status, 'confirmed'),
+            or(
+              and(
+                gte(bookings.checkInDate, checkInDate),
+                lte(bookings.checkInDate, checkOutDate)
+              ),
+              and(
+                gte(bookings.checkOutDate, checkInDate),
+                lte(bookings.checkOutDate, checkOutDate)
+              )
             )
           )
-          .limit(1);
+        );
 
-        if (coupon[0]) {
-          couponDiscount = Math.min(
-            coupon[0].maxDiscountAmount ?? 0,
-            Math.round(basePrice * (coupon[0].discountValue / 100))
-          );
-        }
-      }
-
-      const taxAmount = Math.round(basePrice * 0.18);
-      const totalAmount = basePrice + taxAmount - couponDiscount;
-
-      const existingBooking = await db.query.bookings.findFirst({
-        where: and(
-          eq(bookings.roomId, roomId),
-          eq(bookings.status, 'confirmed'),
-          gt(bookings.checkOutDate, new Date(checkInDate).toISOString())
-        ),
-      });
-
-      if (existingBooking) {
+      if (overlappingBookings.length > 0) {
         return next(
-          CustomErrorHandler.notFound('Room is not available for the selected period')
+          CustomErrorHandler.invalid('Room is not available for selected dates')
         );
       }
 
-      const [booking] = await db
+      // Calculate prices
+      const basePrice = bookingType === 'hourly' 
+        ? room.pricePerHour * hoursBooked 
+        : room.pricePerDay * daysBooked;
+      const taxAmount = Math.round(basePrice * 0.18); // 18% GST
+      const discountAmount = 0; // Calculate based on coupon if provided
+      const totalAmount = basePrice + taxAmount - discountAmount;
+
+      // Create booking
+      const [newBooking] = await db
         .insert(bookings)
         .values({
-          roomId,
           userId,
-          propertyId: room.propertyId,
+          propertyId,
+          roomId,
           bookingType,
-          checkInDate: new Date(checkInDate).toISOString(),
-          checkOutDate: new Date(checkOutDate).toISOString(),
-          hoursBooked: hours_booked,
-          daysBooked: days_booked,
+          checkInDate,
+          checkOutDate,
+          hoursBooked,
+          daysBooked,
           guestCount,
           basePrice,
           taxAmount,
-          discountAmount: couponDiscount,
+          discountAmount,
           totalAmount,
-          status: 'pending',
           specialRequests,
           couponId,
+          status: 'pending',
+          paymentStatus: 'pending',
         })
         .returning();
 
-      await db.insert(payments).values({
-        userId,
-        bookingId: booking.id,
-        amount: totalAmount,
-        status: 'pending',
-        paymentMethod: 'pay_at_hotel',
-      });
+      // Create payment record
+      const [payment] = await db
+        .insert(payments)
+        .values({
+          bookingId: newBooking.id,
+          userId,
+          amount: totalAmount,
+          paymentMethod,
+          status: 'pending',
+        })
+        .returning();
 
-      res
-        .status(201)
-        .send(ResponseHandler(201, 'Booking created successfully', booking));
+      res.status(201).json({
+        message: 'Booking created successfully',
+        data: {
+          booking: newBooking,
+          payment,
+          verification: {
+            qrCode: verification.qrCode,
+            documentType: verification.documentType,
+          }
+        },
+      });
     } catch (error) {
       next(error);
     }
@@ -244,6 +239,16 @@ const bookingController = {
     try {
       const bookingsList = await db.query.bookings.findMany({
         where: eq(bookings.userId, userId),
+        with: {
+          room: {
+            with: {
+              property: true,
+              roomImages: true
+            }
+          },
+          payments: true
+        },
+        orderBy: [desc(bookings.createdAt)]
       });
 
       res
@@ -257,23 +262,92 @@ const bookingController = {
   async cancelBooking(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     const userId = req.user?.id;
     const { id } = req.params;
-
-    if (!userId) return next(CustomErrorHandler.unAuthorized());
+    if (!userId) {
+      next(CustomErrorHandler.unAuthorized());
+      return;
+    }
 
     try {
+      const booking = await db.query.bookings.findFirst({
+        where: and(
+          eq(bookings.id, id),
+          eq(bookings.userId, userId)
+        )
+      });
+
+      if (!booking) {
+        next(CustomErrorHandler.notFound('Booking not found'));
+        return;
+      }
+
+      if (booking.status === 'cancelled') {
+        next(CustomErrorHandler.invalid('Booking is already cancelled'));
+        return;
+      }
+
+      if (booking.status === 'checked_out') {
+        next(CustomErrorHandler.invalid('Cannot cancel a checked out booking'));
+        return;
+      }
+
       const [cancelled] = await db
         .update(bookings)
-        .set({ status: 'cancelled' })
-        .where(and(eq(bookings.id, id), eq(bookings.userId, userId)))
+        .set({ 
+          status: 'cancelled',
+          updatedAt: new Date().toISOString()
+        })
+        .where(and(
+          eq(bookings.id, id),
+          eq(bookings.userId, userId)
+        ))
         .returning();
 
-      return res
+      // Update payment status if exists
+      await db
+        .update(payments)
+        .set({ 
+          status: 'refunded',
+          updatedAt: new Date().toISOString()
+        })
+        .where(eq(payments.bookingId, id));
+
+      res
         .status(200)
         .send(ResponseHandler(200, 'Booking cancelled successfully', cancelled));
     } catch (error) {
       next(error);
     }
   },
+
+  async getBookingStats(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    const userId = req.user?.id;
+    if (!userId) {
+      next(CustomErrorHandler.unAuthorized());
+      return;
+    }
+
+    try {
+      const totalBookings = await db.query.bookings.findMany({
+        where: eq(bookings.userId, userId)
+      });
+
+      const stats = {
+        total: totalBookings.length,
+        pending: totalBookings.filter(b => b.status === 'pending').length,
+        confirmed: totalBookings.filter(b => b.status === 'confirmed').length,
+        checked_in: totalBookings.filter(b => b.status === 'checked_in').length,
+        checked_out: totalBookings.filter(b => b.status === 'checked_out').length,
+        cancelled: totalBookings.filter(b => b.status === 'cancelled').length,
+        no_show: totalBookings.filter(b => b.status === 'no_show').length
+      };
+
+      res
+        .status(200)
+        .send(ResponseHandler(200, 'Booking stats fetched successfully', stats));
+    } catch (error) {
+      next(error);
+    }
+  }
 };
 
 export default bookingController;
