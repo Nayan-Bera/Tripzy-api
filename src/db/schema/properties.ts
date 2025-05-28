@@ -4,10 +4,11 @@ import hotels from "./hotel";
 import rooms from "./room";
 import bookings from "./booking";
 import images from "./image";
-import reviews from "./review";
-import favorites from "./favorite";
+import reviews from "./reviews";
+import favorites from "./favorites";
 
-export const properties = pgTable("properties", {
+
+ const properties = pgTable("properties", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
   hotelId: uuid("hotel_id").notNull().references(() => hotels.id),
   title: text("title").notNull(),

@@ -2,7 +2,7 @@ import { relations } from "drizzle-orm";
 import { pgTable, uuid, text } from "drizzle-orm/pg-core";
 import users from "./user";
 
-export const familyMembers = pgTable("family_members", {
+ const familyMembers = pgTable("family_members", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
   userId: uuid("user_id").notNull().references(() => users.id),
   name: text("name").notNull(),

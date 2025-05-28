@@ -1,12 +1,13 @@
 import { relations } from "drizzle-orm";
 import { pgTable, uuid, text, varchar, integer, numeric } from "drizzle-orm/pg-core";
-import properties from "./property";
-import bookingRooms from "./bookingRoom";
+import properties from "./properties";
+import bookingRooms from "./bookingRooms";
 import roomAvailabilities from "./roomAvailability";
-import unavailabilities from "./unavailability";
+import unavailabilities from "./unAvailaibility";
 import images from "./image";
 
-export const rooms = pgTable("rooms", {
+
+ const rooms = pgTable("rooms", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
   propertyId: uuid("property_id").notNull().references(() => properties.id),
   name: text("name").notNull(),

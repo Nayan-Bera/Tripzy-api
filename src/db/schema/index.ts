@@ -1,0 +1,16 @@
+export {default as users} from './user';
+export {default as rooms} from './room';
+export {default as notifications} from './notifications';
+export {default as otps} from './emailOtp';
+export {default as refreshTokens} from './refreshtoken';
+export {default as familyMembers} from './familymabers';
+export {default as favorites} from './favorites';
+export {default as unavailabilities} from './unAvailaibility';
+export {default as roomAvailabilities} from './roomAvailability';
+export {default as hotels} from './hotel';
+export {default as payouts} from './payouts';
+export {default as bookings} from './booking';
+export {default as images} from './image';
+export {default as properties} from './properties';
+export {default as reviews} from './reviews';
+export {default as documents} from './documents';

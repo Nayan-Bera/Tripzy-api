@@ -1,10 +1,10 @@
 import { relations } from "drizzle-orm";
 import { pgTable, uuid, text } from "drizzle-orm/pg-core";
-import properties from "./property";
 import rooms from "./room";
 import users from "./user";
+import properties from "./properties";
 
-export const images = pgTable("images", {
+ const images = pgTable("images", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
   url: text("url").notNull(),
   propertyId: uuid("property_id").references(() => properties.id),

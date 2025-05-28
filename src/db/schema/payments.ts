@@ -2,7 +2,7 @@ import { relations } from "drizzle-orm";
 import { pgTable, uuid, timestamp, numeric, varchar } from "drizzle-orm/pg-core";
 import bookings from "./booking";
 
-export const payments = pgTable("payments", {
+const payments = pgTable("payments", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
   bookingId: uuid("booking_id").notNull().references(() => bookings.id),
   amount: numeric("amount", { precision: 10, scale: 2 }).notNull(),

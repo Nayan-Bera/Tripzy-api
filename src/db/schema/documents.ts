@@ -3,7 +3,7 @@ import { pgTable, uuid, text, varchar } from "drizzle-orm/pg-core";
 import users from "./user";
 import bookings from "./booking";
 
-export const documents = pgTable("documents", {
+ const documents = pgTable("documents", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
   bookingId: uuid("booking_id").notNull().references(() => bookings.id),
   userId: uuid("user_id").notNull().references(() => users.id),

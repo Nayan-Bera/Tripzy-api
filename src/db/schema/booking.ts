@@ -1,11 +1,12 @@
 import { relations } from "drizzle-orm";
 import { pgTable, uuid, timestamp, varchar, text } from "drizzle-orm/pg-core";
 import users from "./user";
-import properties from "./property";
-import bookingRooms from "./bookingRoom";
-import payments from "./payment";
+import properties from "./properties";
+import bookingRooms from "./bookingRooms";
+import payments from "./payments";
 
-export const bookings = pgTable("bookings", {
+
+ const bookings = pgTable("bookings", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
   userId: uuid("user_id").notNull().references(() => users.id),
   propertyId: uuid("property_id").notNull().references(() => properties.id),
