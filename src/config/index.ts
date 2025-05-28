@@ -1,4 +1,4 @@
-import dotenv from 'dotenv';
+import * as dotenv from 'dotenv';
 import { z } from 'zod';
 
 // Load environment variables
@@ -60,13 +60,13 @@ const configSchema = z.object({
 
 // Create configuration object
 const config = {
-    port: process.env.PORT,
-    nodeEnv: process.env.NODE_ENV,
+    port: process.env.PORT || 5000,
+    nodeEnv: process.env.NODE_ENV || 'development',
     apiUrl: process.env.API_URL,
     corsOrigin: process.env.CORS_ORIGIN,
     databaseUrl: process.env.DATABASE_URL,
-    jwtSecret: process.env.JWT_SECRET,
-    jwtExpiresIn: process.env.JWT_EXPIRES_IN,
+    jwtSecret: process.env.JWT_SECRET || 'your-secret-key',
+    jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
     jwtRefreshSecret: process.env.JWT_REFRESH_SECRET,
     jwtRefreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN,
     stripeSecretKey: process.env.STRIPE_SECRET_KEY,
@@ -76,7 +76,7 @@ const config = {
     cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,
     cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET,
     smtpHost: process.env.SMTP_HOST,
-    smtpPort: process.env.SMTP_PORT,
+    smtpPort: process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT) : 587,
     smtpUser: process.env.SMTP_USER,
     smtpPass: process.env.SMTP_PASS,
     redisUrl: process.env.REDIS_URL,

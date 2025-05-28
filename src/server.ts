@@ -2,11 +2,12 @@ import app from './app';
 import config from './config';
 import logger from './utils/logger';
 import db from './db';
+import { sql } from 'drizzle-orm';
 
 const startServer = async () => {
     try {
         // Test database connection
-        await db.query.raw('SELECT 1');
+        await db.execute(sql`SELECT 1`);
         logger.info('Database connection successful');
 
         // Start server

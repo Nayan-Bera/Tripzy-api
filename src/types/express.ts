@@ -1,6 +1,9 @@
 import { Request } from 'express';
-import { IUserRequestBody } from '../@types/user.types';
+import { users } from '../db/schema';
+
+type Portal = 'admin' | 'hotel' | 'customer';
 
 export interface AuthenticatedRequest extends Request {
-    user?: IUserRequestBody;
+    user?: typeof users.$inferSelect;
+    portal?: Portal;
 } 
