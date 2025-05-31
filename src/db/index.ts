@@ -19,6 +19,7 @@ import {
     rooms,
     unavailabilities,
     users,
+    bookingRooms
 } from './schema';
 import { userRelations } from './schema/user';
 import { documentRelations } from './schema/documents';
@@ -36,7 +37,7 @@ import { reviewRelations } from './schema/reviews';
 import { roomAvailabilityRelations } from './schema/roomAvailability';
 import { roomRelations } from './schema/room';
 import { unavailabilityRelations } from './schema/unAvailaibility';
-import bookingRooms, { bookingRoomRelations } from './schema/bookingRooms';
+import { bookingRoomRelations } from './schema/bookingRooms';
 import { bookingRelations } from './schema/booking';
 
 const schema = {
