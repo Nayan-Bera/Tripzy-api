@@ -1,16 +1,84 @@
-export {default as user} from './schema/user';
-export {default as rooms} from './schema/room';
-export {default as notifications} from './schema/notifications';
-export {default as otps} from './schema/emailOtp';
-export {default as refreshTokens} from './schema/refreshtoken';
-export {default as familyMembers} from './schema/familymabers';
-export {default as favorites} from './schema/favorites';
-export {default as unavailabilities} from './schema/unAvailaibility';
-export {default as roomAvailabilities} from './schema/roomAvailability';
-export {default as hotels} from './schema/hotel';
-export {default as payouts} from './schema/payouts';
-export {default as bookings} from './schema/booking';
-export {default as images} from './schema/image';
-export {default as properties} from './schema/properties';
-export {default as reviews} from './schema/reviews';
-export {default as documents} from './schema/documents';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
+import {
+    bookings,
+    contectus,
+    documents,
+    familyMembers,
+    favorites,
+    hotels,
+    images,
+    notifications,
+    otps,
+    payments,
+    payouts,
+    properties,
+    refreshTokens,
+    reviews,
+    roomAvailabilities,
+    rooms,
+    unavailabilities,
+    users,
+} from './schema';
+import { userRelations } from './schema/user';
+import { documentRelations } from './schema/documents';
+import { otpRelations } from './schema/emailOtp';
+import { familyMemberRelations } from './schema/familymabers';
+import { favoriteRelations } from './schema/favorites';
+import { hotelRelations } from './schema/hotel';
+import { imageRelations } from './schema/image';
+import { notificationRelations } from './schema/notifications';
+import { paymentRelations } from './schema/payments';
+import { payoutRelations } from './schema/payouts';
+import { propertyRelations } from './schema/properties';
+import { refreshTokenRelations } from './schema/refreshtoken';
+import { reviewRelations } from './schema/reviews';
+import { roomAvailabilityRelations } from './schema/roomAvailability';
+import { roomRelations } from './schema/room';
+import { unavailabilityRelations } from './schema/unAvailaibility';
+import bookingRooms, { bookingRoomRelations } from './schema/bookingRooms';
+import { bookingRelations } from './schema/booking';
+
+const schema = {
+    users,
+    otps,
+    favorites,
+    refreshTokens,
+    properties,
+    contectus,
+    hotels,
+    images,
+    familyMembers,
+    documents,
+    notifications,
+    payouts,
+    payments,  
+    bookings,
+    bookingRooms, 
+    rooms,
+    reviews,
+    roomAvailabilities,
+    unavailabilities,
+    userRelations,
+    documentRelations,
+    otpRelations,
+    familyMemberRelations,
+    favoriteRelations,
+    hotelRelations,
+    imageRelations,
+    notificationRelations,
+    paymentRelations,
+    payoutRelations,
+    propertyRelations,
+    refreshTokenRelations,
+    reviewRelations,
+    roomAvailabilityRelations,
+    roomRelations,
+    unavailabilityRelations,
+    bookingRelations,
+    bookingRoomRelations
+} as const;
+
+export const sql = postgres(process.env.PG_DB_URL || '', { max: 1 });
+const db = drizzle(sql, { schema, logger: false });
+export default db;
