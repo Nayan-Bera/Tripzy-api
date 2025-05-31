@@ -1,0 +1,16 @@
+export {default as user} from './schema/user';
+export {default as rooms} from './schema/room';
+export {default as notifications} from './schema/notifications';
+export {default as otps} from './schema/emailOtp';
+export {default as refreshTokens} from './schema/refreshtoken';
+export {default as familyMembers} from './schema/familymabers';
+export {default as favorites} from './schema/favorites';
+export {default as unavailabilities} from './schema/unAvailaibility';
+export {default as roomAvailabilities} from './schema/roomAvailability';
+export {default as hotels} from './schema/hotel';
+export {default as payouts} from './schema/payouts';
+export {default as bookings} from './schema/booking';
+export {default as images} from './schema/image';
+export {default as properties} from './schema/properties';
+export {default as reviews} from './schema/reviews';
+export {default as documents} from './schema/documents';
