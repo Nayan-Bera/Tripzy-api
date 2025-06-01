@@ -3,6 +3,13 @@ import { eq } from 'drizzle-orm';
 import { NextFunction, Request, Response } from 'express';
 
 import db from '../../../db';
+import loginSchema from '../../../validators/auth/login.validator';
+import { ILogin } from '../../../@types/auth.types';
+import { refreshTokens, users } from '../../../db/schema';
+import CustomErrorHandler from '../../../Services/customErrorHandaler';
+import JwtService from '../../../Services/jwtService';
+import ResponseHandler from '../../../utils/responseHandealer';
+import { config } from '../../../config';
 
 
 const loginController = {
@@ -15,8 +22,8 @@ const loginController = {
 
             const { email, password }: ILogin = req.body;
 
-            const userResult = await db.query.user.findFirst({
-                where: eq(user?.email, email),
+            const userResult = await db.query.users.findFirst({
+                where: eq(users?.email, email),
             });
          
             if (!userResult) {
@@ -52,11 +59,11 @@ const loginController = {
                 config.REFRESH_SECRET,
             );
 
-            await db.insert(refreshToken).values({ token: refresh_token });
+            await db.insert(refreshTokens).values({ token: refresh_token });
 
             res.status(200).send(
                 ResponseHandler(200, 'success', {
-                    name: userResult.fullname,
+                    name: userResult.name,
                     email: userResult.email,
                     email_verified: userResult.email_verified,
                     role: userResult.role,

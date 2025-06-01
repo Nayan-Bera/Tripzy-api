@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { pgTable, uuid, text, varchar, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, varchar, timestamp,boolean } from "drizzle-orm/pg-core";
 import hotels from "./hotel";
 import bookings from "./booking";
 import documents from "./documents";
@@ -11,6 +11,7 @@ import refreshTokens from "./refreshtoken";
 import otps from "./emailOtp";
 import familyMembers from "./familymabers";
 
+
  const users = pgTable("users", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
   name: text("name").notNull(),
@@ -18,6 +19,7 @@ import familyMembers from "./familymabers";
   password: text("password").notNull(),
   role: varchar("role", { enum: ["user", "hotel", "admin"] }).notNull(),
   status: varchar("status", { enum: ["active", "inactive"] }).notNull(),
+  email_verified: boolean("email_verified").notNull().default(false),
   avatar:varchar("avatar"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),

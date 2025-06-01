@@ -4,10 +4,10 @@ import users from "./user";
 
 const refreshTokens = pgTable("refresh_tokens", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
-  userId: uuid("user_id").notNull().references(() => users.id),
+  userId: uuid("user_id").references(() => users.id),
   token: text("token").notNull(),
-  expiresAt: timestamp("expires_at").notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
+  expiresAt: timestamp("expires_at"),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const refreshTokenRelations = relations(refreshTokens, ({ one }) => ({
