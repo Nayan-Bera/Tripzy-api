@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: tripzy-app
+    ports:
+      - "8000:8000"          # Host:Container
+    environment:
+      # Example DB envs – match what your Node app expects
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: Tripzy
+      DB_PASSWORD: Abc@123
+      DB_NAME: TripzyDB
+    depends_on:
+      - db
+    networks:
+      - backend-network
+
+  db:
+    image: postgres:latest
+    container_name: tripzy-db
+    environment:
+      POSTGRES_USER: Tripzy
+      POSTGRES_PASSWORD: Abc@123
+      POSTGRES_DB: TripzyDB
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    networks:
+      - backend-network
+
+  adminer:
+    image: adminer:latest
+    container_name: tripzy-adminer
+    ports:
+      - "8080:8080" # Access Adminer at http://localhost:8080
+    networks:
+      - backend-network
+
+volumes:
+  postgres-data:
+
+networks:
+  backend-network:
+    driver: bridge
