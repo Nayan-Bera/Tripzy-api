@@ -10,7 +10,7 @@ import JwtService from '../../../Services/jwtService';
 import ResponseHandler from '../../../utils/responseHandealer';
 import registerSchema from '../../../validators/auth/register.validator';
 
-
+ 
 const registerController = {
     async userRegister(req: Request, res: Response, next: NextFunction) {
         try {
