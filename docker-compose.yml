@@ -5,7 +5,7 @@ services:
     build: .
     container_name: tripzy-app
     ports:
-      - "8000:8000"          # Host:Container
+      - "8000:8000"
     environment:
       # Example DB envs – match what your Node app expects
       DB_HOST: db
@@ -36,7 +36,7 @@ services:
     image: adminer:latest
     container_name: tripzy-adminer
     ports:
-      - "8080:8080" # Access Adminer at http://localhost:8080
+      - "8080:8080" 
     networks:
       - backend-network
 
