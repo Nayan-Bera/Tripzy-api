@@ -1,8 +1,8 @@
-import { Request, Response, NextFunction } from 'express';
-import { db } from '../db';
-import { users } from '../db/schema';
 import { eq } from 'drizzle-orm';
+import { NextFunction, Response } from 'express';
 import jwt from 'jsonwebtoken';
+import db from '../db';
+import { users } from '../db/schema';
 import { AuthenticatedRequest } from '../types/express';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
@@ -24,7 +24,7 @@ export const authenticateHotelStaff = async (
             where: eq(users.id, decoded.id)
         });
 
-        if (!user || user.role !== 'hotel_owner' || !user.isActive) {
+        if (!user || user.role !== 'hotel') {
             return res.status(403).json({ message: 'Access denied. Hotel staff only.' });
         }
 

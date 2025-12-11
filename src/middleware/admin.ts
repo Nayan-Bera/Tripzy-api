@@ -2,14 +2,14 @@ import { NextFunction, Response } from 'express';
 
 import db from '../db';
 import { eq } from 'drizzle-orm';
-import { user } from '../db/schema';
+import { users } from '../db/schema';
 import roles from '../constant/role';
 import CustomErrorHandler from '../Services/customErrorHandaler';
 
 const admin = async (req: any, res: Response, next: NextFunction) => {
     try {
-        const userRes = await db.query.user.findFirst({
-            where: eq(user?.id, req.user.id),
+        const userRes = await db.query.users.findFirst({
+            where: eq(users?.id, req.user.id),
         });
         if (
             userRes?.role === roles.ADMIN ||

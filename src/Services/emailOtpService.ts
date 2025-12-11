@@ -3,7 +3,7 @@ import nodemailer from 'nodemailer';
 import { config } from '../config';
 import generateRandomDigit from '../utils/generaterandomDigit';
 import db from '../db';
-import { emailOtp } from '../db/schema';
+import { otps } from '../db/schema';
 
 const transporter = nodemailer.createTransport({
     host: config.SMTP_HOST,
@@ -171,12 +171,12 @@ const emailOtpService = async (
 
         try {
             const val = await db
-                .insert(emailOtp)
+                .insert(otps)
                 .values({
-                    user_id: id,
-                    otp: createOTP.toString(),
-                    generatedAt: Date.now().toString(),
-                    expiresAt: (Date.now() + 3600000).toString(),
+                    userId: id,
+                    code: createOTP.toString(),
+                   expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
+
                 })
                 .returning();
         } catch (error) {}

@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { AppError } from './error.middleware';
-import config from '../config';
-import { users } from '../db/schema/user';
 import { eq } from 'drizzle-orm';
 import db from '../db';
+import { config } from '../config';
+import { users } from '../db/schema';
 
 export interface AuthenticatedRequest extends Request {
     user?: any;
@@ -25,7 +25,7 @@ export const protect = async (
         const token = authHeader.split(' ')[1];
 
         // 2) Verify token
-        const decoded = jwt.verify(token, config.jwt.secret) as any;
+        const decoded = jwt.verify(token, config.ACCESS_SECRET) as any;
 
         // 3) Check if user still exists
         const [user] = await db.select().from(users).where(eq(users.id, decoded.id));

@@ -1,5 +1,6 @@
+// src/controller/v1/auth/refreshToken.controller.ts
+import { RequestHandler } from 'express';
 import { eq } from 'drizzle-orm';
-import { NextFunction, Request, Response } from 'express';
 import Joi from 'joi';
 import { JwtPayload } from 'jsonwebtoken';
 import { config } from '../../../config';
@@ -9,70 +10,68 @@ import CustomErrorHandler from '../../../Services/customErrorHandaler';
 import JwtService from '../../../Services/jwtService';
 
 const refreshSchema = Joi.object({
-    refresh_token: Joi.string().required(),
+  refresh_token: Joi.string().required(),
 });
 
-const refreshTokenController = {
-    async refresh(req: Request, res: Response, next: NextFunction) {
-        const { error } = refreshSchema.validate(req.body);
+export const refresh: RequestHandler = async (req, res, next) => {
+  const { error } = refreshSchema.validate(req.body);
+  if (error) {
+    next(error);
+    return;
+  }
 
-        if (error) {
-            return next(error);
-        }
+  try {
+    const refreshTokenDocument = await db.query.refreshTokens.findFirst({
+      where: eq(refreshTokenDb.token, req.body.refresh_token),
+    });
 
-        let refreshTokenDocument;
+    if (!refreshTokenDocument || !refreshTokenDocument.token) {
+      next(CustomErrorHandler.unAuthorized('Invalid refresh token'));
+      return;
+    }
 
-        try {
-            refreshTokenDocument = await db.query.refreshTokens.findFirst({
-                where: eq(refreshTokenDb?.token, req.body.refresh_token),
-            });
+    let userId: string;
+    try {
+      const { id } = (await JwtService.verify(
+        refreshTokenDocument.token,
+        config.REFRESH_SECRET
+      )) as JwtPayload;
+      userId = id;
+    } catch (err) {
+      next(CustomErrorHandler.unAuthorized('Invalid refresh token'));
+      return;
+    }
 
-            if (!refreshTokenDocument || !refreshTokenDocument.token) {
-                return next(
-                    CustomErrorHandler.unAuthorized('Invalid refresh token'),
-                );
-            }
+    const userRes = await db.query.users.findFirst({
+      where: eq(users.id, userId),
+    });
 
-            let userId: string;
-            try {
-                const { id } = (await JwtService.verify(
-                    refreshTokenDocument.token,
-                    config.REFRESH_SECRET,
-                )) as JwtPayload;
-                userId = id;
-            } catch (err) {
-                return next(
-                    CustomErrorHandler.unAuthorized('Invalid refresh token'),
-                );
-            }
+    if (!userRes) {
+      next(CustomErrorHandler.unAuthorized('No user found!'));
+      return;
+    }
 
-            const userRes = await db.query.users.findFirst({
-                where: eq(users?.id, userId),
-            });
-            if (!userRes) {
-                return next(CustomErrorHandler.unAuthorized('No user found!'));
-            }
+    const access_token = JwtService.sign({
+      id: userRes.id,
+      role: userRes.role,
+    });
+    const refresh_token = JwtService.sign(
+      { id: userRes.id, role: userRes.role },
+      '1y',
+      config.REFRESH_SECRET
+    );
 
-            const access_token = JwtService.sign({
-                id: userRes?.id,
-                role: userRes?.role,
-            });
-            const refresh_token = JwtService.sign(
-                { id: userRes?.id, role: userRes?.role },
-                '1y',
-                config.REFRESH_SECRET,
-            );
-            await db
-                .update(refreshTokenDb)
-                .set({
-                    token: refresh_token,
-                })
-                .where(eq(refreshTokenDb.token, req.body.refresh_token));
-            res.json({ access_token, refresh_token });
-        } catch (error) {
-            return next(new Error('Something went wrong'));
-        }
-    },
+    await db
+      .update(refreshTokenDb)
+      .set({ token: refresh_token })
+      .where(eq(refreshTokenDb.token, req.body.refresh_token));
+
+    res.json({ access_token, refresh_token });
+    return;
+  } catch (err) {
+    next(new Error('Something went wrong'));
+    return;
+  }
 };
 
-export default refreshTokenController;
+

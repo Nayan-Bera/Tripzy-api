@@ -1,0 +1,8 @@
+{"code":"ECONNREFUSED","level":"error","message":"Failed to start server:","stack":"AggregateError\n    at internalConnectMultiple (node:net:1116:18)\n    at afterConnectMultiple (node:net:1683:7)","timestamp":"2025-12-11T15:53:49.899Z"}
+{"level":"info","message":"Attempting database connection...","timestamp":"2025-12-11T15:57:21.656Z"}
+{"level":"error","message":"❌ DATABASE CONNECTION FAILED!","timestamp":"2025-12-11T15:57:21.669Z"}
+{"level":"info","message":"Attempting database connection...","timestamp":"2025-12-11T15:57:28.579Z"}
+{"level":"error","message":"❌ DATABASE CONNECTION FAILED!","timestamp":"2025-12-11T15:57:28.593Z"}
+{"level":"info","message":"Attempting database connection...","timestamp":"2025-12-11T16:01:32.941Z"}
+{"level":"info","message":"✅ Database connection successful","timestamp":"2025-12-11T16:01:32.978Z"}
+{"level":"info","message":"🚀 Server running in development mode on port 8000","timestamp":"2025-12-11T16:01:32.981Z"}

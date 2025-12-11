@@ -27,4 +27,9 @@ export const config = {
     MINIO_ACCESS_KEY: process.env.MINIO_ACCESS_KEY,
     MINIO_SECRET_KEY: process.env.MINIO_SECRET_KEY,
     MINIO_BUCKET_NAME: process.env.MINIO_BUCKET_NAME,
+    nodeEnv: process.env.NODE_ENV || 'development',
+    rateLimitWindowMs:
+        Number(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
+    rateLimitMaxRequests: Number(process.env.RATE_LIMIT_MAX) || 100,
+    redisUrl: process.env.REDIS_URL || '',
 };

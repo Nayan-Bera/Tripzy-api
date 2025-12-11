@@ -6,9 +6,9 @@
   "author": "Nayan-kr-Bera <nayanbera92gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon --legacy-watch src/index.ts",
+    "dev": "nodemon --legacy-watch src/server.ts",
     "build": "tsc --project .",
-    "start": "node dist/index.js",
+    "start": "node dist/server.js",
     "generate": "drizzle-kit generate --config ./src/drizzle.config.ts",
     "migrate": "drizzle-kit migrate --config ./src/drizzle.config.ts",
     "studio": "drizzle-kit studio --config ./src/drizzle.config.ts",
@@ -40,7 +40,9 @@
     "dotenv": "^16.5.0",
     "drizzle-orm": "^0.42.0",
     "express": "^4.21.2",
+    "express-rate-limit": "^8.2.1",
     "helmet": "^8.1.0",
+    "ioredis": "^5.8.2",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
@@ -48,11 +50,13 @@
     "passport": "^0.7.0",
     "postgres": "^3.4.5",
     "qrcode": "^1.5.4",
+    "rate-limit-redis": "^4.3.1",
     "react-qr-scanner": "^1.0.0-alpha.11",
     "stripe": "^14.17.0",
     "ts-node": "^10.9.2",
     "uuid": "^11.1.0",
-    "winston": "^3.17.0"
+    "winston": "^3.17.0",
+    "zod": "^4.1.13"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",

@@ -1,15 +1,12 @@
 import db from '../db';
-import { notifications } from '../db/schema/notifications';
 import { eq } from 'drizzle-orm';
+import { notifications } from '../db/schema';
 
-export const createNotification = async (userId: string, type: string, message: string, data?: object) => {
+export const createNotification = async (userId: string, message: string) => {
     try {
         const notification = await db.insert(notifications).values({
             userId,
-            type,
             message,
-            data: data || {},
-            isRead: false
         }).returning();
 
         return notification[0];
@@ -24,7 +21,6 @@ export const markNotificationAsRead = async (notificationId: string) => {
         const notification = await db.update(notifications)
             .set({
                 isRead: true,
-                updatedAt: new Date()
             })
             .where(eq(notifications.id, notificationId))
             .returning();

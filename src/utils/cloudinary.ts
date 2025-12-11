@@ -1,11 +1,11 @@
 import { v2 as cloudinary } from 'cloudinary';
-import config from '../config';
+import {config} from '../config';
 import logger from './logger';
 
 cloudinary.config({
-    cloud_name: config.cloudinary.cloudName,
-    api_key: config.cloudinary.apiKey,
-    api_secret: config.cloudinary.apiSecret
+    cloud_name: config.CLOUDINARY_NAME,
+    api_key: config.CLOUDINARY_APIKEY,
+    api_secret: config.CLOUDINARY_APISECRET,
 });
 
 export const uploadImage = async (file: string, folder: string = 'findyourhotel'): Promise<string> => {

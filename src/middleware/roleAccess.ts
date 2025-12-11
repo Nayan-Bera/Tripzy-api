@@ -1,7 +1,7 @@
 import { Response, NextFunction } from 'express';
 import { AuthenticatedRequest } from '../types/express';
 
-type UserRole = 'admin' | 'hotel_owner' | 'customer';
+type UserRole = 'admin' | 'hotel' | 'user';
 
 export const requireRole = (allowedRoles: UserRole[]) => {
     return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
@@ -25,8 +25,8 @@ export const requireRole = (allowedRoles: UserRole[]) => {
 
 // Specific role middleware
 export const requireAdmin = requireRole(['admin']);
-export const requireHotelOwner = requireRole(['hotel_owner', 'admin']);
-export const requireCustomer = requireRole(['customer', 'admin']);
+export const requireHotelOwner = requireRole(['hotel', 'admin']);
+export const requireCustomer = requireRole(['user', 'admin']);
 
 // Portal-specific middleware
 export const requireAdminPortal = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
@@ -52,7 +52,7 @@ export const requireHotelPortal = (req: AuthenticatedRequest, res: Response, nex
         return res.status(401).json({ message: 'Authentication required' });
     }
 
-    if (user.role !== 'hotel_owner' && user.role !== 'admin') {
+    if (user.role !== 'hotel' && user.role !== 'admin') {
         return res.status(403).json({ message: 'Access denied. Hotel portal only.' });
     }
 
@@ -68,7 +68,7 @@ export const requireCustomerPortal = (req: AuthenticatedRequest, res: Response, 
         return res.status(401).json({ message: 'Authentication required' });
     }
 
-    if (user.role !== 'customer' && user.role !== 'admin') {
+    if (user.role !== 'user' && user.role !== 'admin') {
         return res.status(403).json({ message: 'Access denied. Customer portal only.' });
     }
 
