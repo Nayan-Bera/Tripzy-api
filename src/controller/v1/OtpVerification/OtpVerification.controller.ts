@@ -6,53 +6,62 @@ import ResponseHandler from "../../../utils/responseHandealer";
 import CustomErrorHandler from "../../../Services/customErrorHandaler";
 import emailOtpService from "../../../Services/emailOtpService";
 
-export const verifyOtp: RequestHandler = async (req: any, res, next) => {
-  const { otp } = req.body;
-  const id = req.user.id;
-
+export const verifyOtp: RequestHandler = async (req, res, next) => {
   try {
-    const isExist = await db.query.otps.findMany({
-      where: eq(otps.userId, id),
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return next(CustomErrorHandler.wrongCredentials('Email and OTP are required'));
+    }
+
+    // 1️⃣ Find user
+    const user = await db.query.users.findFirst({
+      where: eq(users.email, email),
     });
 
-    if (isExist.length === 0) {
-      res.status(401).json({ msg: 'Please login or register the account' });
-      return;
+    if (!user) {
+      return next(CustomErrorHandler.unAuthorized('User not found'));
     }
 
-    const expires = Number(isExist[0].expiresAt);
+    // 2️⃣ Find OTP
+    const otpRecord = await db.query.otps.findFirst({
+      where: eq(otps.userId, user.id),
+    });
 
-    if (expires < Date.now()) {
-      await db.delete(otps).where(eq(otps.userId, id));
-      res.status(401).json({ msg: 'Generated OTP is expired, resend now' });
-      return;
+    if (!otpRecord) {
+      return next(CustomErrorHandler.unAuthorized('OTP not found or expired'));
     }
 
-    if (isExist[0]?.code !== otp) {
-      res.status(401).json({ msg: 'Invalid OTP check your inbox' });
-      return;
+    // 3️⃣ Check expiry
+    if (otpRecord.expiresAt.getTime() < Date.now()) {
+      await db.delete(otps).where(eq(otps.userId, user.id));
+      return next(CustomErrorHandler.unAuthorized('OTP expired, resend OTP'));
     }
 
-    const [updatedUser] = await db
+    // 4️⃣ Check OTP
+    if (otpRecord.code !== otp) {
+      return next(CustomErrorHandler.unAuthorized('Invalid OTP'));
+    }
+
+    // 5️⃣ Verify email
+    await db
       .update(users)
       .set({ email_verified: true })
-      .where(eq(users.id, id))
-      .returning({
-        email_verified: users.email_verified,
-      });
+      .where(eq(users.id, user.id));
 
-    await db.delete(otps).where(eq(otps.id, isExist[0].id));
+    // 6️⃣ Delete OTP
+    await db.delete(otps).where(eq(otps.userId, user.id));
 
-    res.status(201).send(
-      ResponseHandler(201, 'Email verified successfuly', {
-        email_verified: updatedUser?.email_verified,
+    res.status(200).json(
+      ResponseHandler(200, 'Email verified successfully', {
+        email_verified: true,
       })
     );
-    return;
   } catch (error) {
-    return next(error);
+    next(error);
   }
 };
+
 
 /**
  * RESEND OTP
