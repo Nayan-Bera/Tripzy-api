@@ -3,3 +3,6 @@
 {"level":"error","message":"❌ DATABASE CONNECTION FAILED!","timestamp":"2025-12-11T15:57:28.593Z"}
 {"level":"error","message":"💥 UNCAUGHT EXCEPTION — server crashed","timestamp":"2025-12-14T17:24:52.809Z"}
 {"level":"error","message":"💥 UNCAUGHT EXCEPTION — server crashed","timestamp":"2025-12-14T17:26:31.321Z"}
+{"level":"error","message":"💥 UNHANDLED REJECTION — server crashed","timestamp":"2025-12-14T18:27:13.680Z"}
+{"level":"error","message":"💥 UNHANDLED REJECTION — server crashed","timestamp":"2025-12-14T18:27:43.873Z"}
+{"level":"error","message":"💥 UNCAUGHT EXCEPTION — server crashed","timestamp":"2025-12-14T18:35:49.339Z"}

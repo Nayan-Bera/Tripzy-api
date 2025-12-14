@@ -10,6 +10,8 @@ export const verifyOtp: RequestHandler = async (req, res, next) => {
   try {
     const { email, otp } = req.body;
 
+    console.log(email, otp);
+
     if (!email || !otp) {
       return next(CustomErrorHandler.wrongCredentials('Email and OTP are required'));
     }
@@ -27,7 +29,8 @@ export const verifyOtp: RequestHandler = async (req, res, next) => {
     const otpRecord = await db.query.otps.findFirst({
       where: eq(otps.userId, user.id),
     });
-
+    console.log(otpRecord?.code);
+    console.log(otp);
     if (!otpRecord) {
       return next(CustomErrorHandler.unAuthorized('OTP not found or expired'));
     }
@@ -66,28 +69,33 @@ export const verifyOtp: RequestHandler = async (req, res, next) => {
 /**
  * RESEND OTP
  */
-export const resendOtp: RequestHandler = async (req: any, res, next) => {
-  const id = req.user.id;
+export const resendOtp: RequestHandler = async (req, res, next) => {
+  const { email } = req.body;
+
+  console.log(email);
+
+  if (!email) {
+    return next(CustomErrorHandler.wrongCredentials("Email is required"));
+  }
 
   try {
     const userRes = await db.query.users.findFirst({
-      where: eq(users.id, id),
+      where: eq(users.email, email),
     });
 
     if (!userRes) {
-      return next(CustomErrorHandler.notFound('User not found'));
+      return next(CustomErrorHandler.notFound("User not found"));
     }
 
-    await db.delete(otps).where(eq(otps.userId, id));
+    await db.delete(otps).where(eq(otps.userId, userRes.id));
 
-    await emailOtpService({ id, email: userRes.email }, res, next);
+    await emailOtpService({ id: userRes.id, email }, res, next);
 
     res.status(201).send(
-      ResponseHandler(201, 'Verification OTP sent on your email')
+      ResponseHandler(201, "Verification OTP sent to your email")
     );
-    return;
   } catch (error) {
-    return next(error);
+    next(error);
   }
 };
 

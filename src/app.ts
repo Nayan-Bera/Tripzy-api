@@ -10,7 +10,7 @@ import passport from 'passport';
 // Import routes
 // import { bookingRoutes, userRoutes } from './routes';
 import { config } from './config';
-import { authRoutes } from './routes';
+import { authRoutes, otpRoutes } from './routes';
 // import propertyRoutes from './routes/property.route';
 // import paymentRoutes from './routes/payment.route';
 // import reviewRoutes from './routes/review.route';
@@ -72,6 +72,7 @@ app.get('/health', (req: Request, res: Response) => {
 // app.use('/api/v1/notifications', notificationRoutes);
 // app.use('/api/v1/identity', identityRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/v1/otp', otpRoutes);
 
 // Google OAuth routes
 // app.get(
