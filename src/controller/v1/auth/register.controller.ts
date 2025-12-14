@@ -12,8 +12,8 @@ import registerSchema from '../../../validators/auth/register.validator';
 
 export const userRegister: RequestHandler = async (req, res, next) => {
   try {
-    const { error } = registerSchema.validate(req.body);
-    if (error) return next(error);
+    // const { error } = registerSchema.validate(req.body);
+    // if (error) return next(error);
 
     const exist = await db.query.users.findFirst({
       where: eq(users.email, req.body.email),
@@ -40,7 +40,6 @@ export const userRegister: RequestHandler = async (req, res, next) => {
         email,
         password: hashedPassword,
         role,
-        phone_number,
       })
       .returning({
         id: users.id,

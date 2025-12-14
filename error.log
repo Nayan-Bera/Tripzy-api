@@ -1,3 +1,5 @@
 {"code":"ECONNREFUSED","level":"error","message":"Failed to start server:","stack":"AggregateError\n    at internalConnectMultiple (node:net:1116:18)\n    at afterConnectMultiple (node:net:1683:7)","timestamp":"2025-12-11T15:53:49.899Z"}
 {"level":"error","message":"❌ DATABASE CONNECTION FAILED!","timestamp":"2025-12-11T15:57:21.669Z"}
 {"level":"error","message":"❌ DATABASE CONNECTION FAILED!","timestamp":"2025-12-11T15:57:28.593Z"}
+{"level":"error","message":"💥 UNCAUGHT EXCEPTION — server crashed","timestamp":"2025-12-14T17:24:52.809Z"}
+{"level":"error","message":"💥 UNCAUGHT EXCEPTION — server crashed","timestamp":"2025-12-14T17:26:31.321Z"}
