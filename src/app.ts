@@ -72,7 +72,7 @@ app.get('/health', (req: Request, res: Response) => {
 // app.use('/api/v1/notifications', notificationRoutes);
 // app.use('/api/v1/identity', identityRoutes);
 app.use('/api/auth', authRoutes);
-app.use('/api/v1/otp', otpRoutes);
+app.use('/api/otp', otpRoutes);
 
 // Google OAuth routes
 // app.get(

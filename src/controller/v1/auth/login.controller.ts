@@ -13,8 +13,8 @@ import JwtService from '../../../Services/jwtService';
 
 export const userLogin: RequestHandler = async (req, res, next) => {
     try {
-        const { error } = loginSchema.validate(req.body);
-        if (error) return next(error);
+        // const { error } = loginSchema.validate(req.body);
+        // if (error) return next(error);
 
         const { email, password }: ILogin = req.body;
 
