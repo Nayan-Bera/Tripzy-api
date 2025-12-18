@@ -17,3 +17,4 @@ export {default as documents} from './documents';
 export {default as contectus} from './contectus';
 export {default as payments} from './payments';
 export {default as bookingRooms} from './bookingRooms'
+export {default as role} from './role';

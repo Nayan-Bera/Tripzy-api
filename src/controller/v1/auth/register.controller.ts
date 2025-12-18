@@ -3,7 +3,7 @@ import { eq } from 'drizzle-orm';
 import { RequestHandler } from 'express';
 import { config } from '../../../config';
 import db from '../../../db';
-import { refreshTokens, users } from '../../../db/schema';
+import { refreshTokens, role, users } from '../../../db/schema';
 import CustomErrorHandler from '../../../Services/customErrorHandaler';
 import emailOtpService from '../../../Services/emailOtpService';
 import JwtService from '../../../Services/jwtService';
@@ -30,7 +30,7 @@ export const userRegister: RequestHandler = async (req, res, next) => {
       return next(CustomErrorHandler.alreadyExist('You are not allowed to create an account'));
     }
 
-    const { name, email, password, role, phone_number }: any = req.body;
+    const { name, email, password, roleId, phone_number }: any = req.body;
     const hashedPassword = await bcrypt.hash(password, Number(config.SALT));
 
     const [saveUser] = await db
@@ -39,21 +39,29 @@ export const userRegister: RequestHandler = async (req, res, next) => {
         name,
         email,
         password: hashedPassword,
-        role,
+        roleId,
       })
       .returning({
         id: users.id,
         fullname: users.name,
         email: users.email,
-        role: users.role,
+        roleId: users.roleId,
         email_verified: users.email_verified,
       });
 
+      const roleName = await db.query.role.findFirst({
+        where: eq(role.id, saveUser.roleId),
+      });
+
+    if (!roleName) {
+      return next(CustomErrorHandler.notFound('Role not found'));
+    }
+
     emailOtpService({ id: saveUser.id, email: saveUser.email }, res, next);
 
-    const access_token = JwtService.sign({ id: saveUser.id, role: saveUser.role });
+    const access_token = JwtService.sign({ id: saveUser.id, role: roleName.name });
     const refresh_token = JwtService.sign(
-      { id: saveUser.id, role: saveUser.role },
+      { id: saveUser.id, role: roleName.name },
       '1y',
       config.REFRESH_SECRET
     );
@@ -66,7 +74,7 @@ export const userRegister: RequestHandler = async (req, res, next) => {
         name: saveUser.fullname,
         email: saveUser.email,
         email_verified: saveUser.email_verified,
-        role: saveUser?.role,
+        role: roleName.name,
         access_token,
         refresh_token,
       })

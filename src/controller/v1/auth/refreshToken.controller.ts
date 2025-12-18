@@ -44,6 +44,13 @@ export const refresh: RequestHandler = async (req, res, next) => {
 
     const userRes = await db.query.users.findFirst({
       where: eq(users.id, userId),
+      with: {
+        role: {
+          columns: {
+            name: true,
+          },
+        },
+      }
     });
 
     if (!userRes) {
@@ -53,10 +60,10 @@ export const refresh: RequestHandler = async (req, res, next) => {
 
     const access_token = JwtService.sign({
       id: userRes.id,
-      role: userRes.role,
+      role: userRes.role.name,
     });
     const refresh_token = JwtService.sign(
-      { id: userRes.id, role: userRes.role },
+      { id: userRes.id, role: userRes.role.name },
       '1y',
       config.REFRESH_SECRET
     );

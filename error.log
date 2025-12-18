@@ -7,3 +7,4 @@
 {"level":"error","message":"💥 UNHANDLED REJECTION — server crashed","timestamp":"2025-12-14T18:27:43.873Z"}
 {"level":"error","message":"💥 UNCAUGHT EXCEPTION — server crashed","timestamp":"2025-12-14T18:35:49.339Z"}
 {"level":"error","message":"💥 UNCAUGHT EXCEPTION — server crashed","timestamp":"2025-12-16T17:08:21.830Z"}
+{"level":"error","message":"❌ DATABASE CONNECTION FAILED!","timestamp":"2025-12-18T17:29:51.923Z"}

@@ -19,7 +19,8 @@ import {
     rooms,
     unavailabilities,
     users,
-    bookingRooms
+    bookingRooms,
+    role
 } from './schema';
 import { userRelations } from './schema/user';
 import { documentRelations } from './schema/documents';
@@ -39,6 +40,7 @@ import { roomRelations } from './schema/room';
 import { unavailabilityRelations } from './schema/unAvailaibility';
 import { bookingRoomRelations } from './schema/bookingRooms';
 import { bookingRelations } from './schema/booking';
+import { roleRelations } from './schema/role';
 
 const schema = {
     users,
@@ -58,6 +60,8 @@ const schema = {
     bookingRooms, 
     rooms,
     reviews,
+    role,
+    roleRelations,
     roomAvailabilities,
     unavailabilities,
     userRelations,

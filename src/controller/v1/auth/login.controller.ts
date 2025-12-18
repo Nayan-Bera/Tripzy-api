@@ -1,15 +1,14 @@
 // src/controller/v1/auth/login.controller.ts
-import { RequestHandler } from 'express';
 import bcrypt from 'bcrypt';
 import { eq } from 'drizzle-orm';
+import { RequestHandler } from 'express';
+import { ILogin } from '../../../@types/auth.types';
 import { config } from '../../../config';
 import db from '../../../db';
 import { refreshTokens, users } from '../../../db/schema';
 import CustomErrorHandler from '../../../Services/customErrorHandaler';
-import ResponseHandler from '../../../utils/responseHandealer';
-import loginSchema from '../../../validators/auth/login.validator';
-import { ILogin } from '../../../@types/auth.types';
 import JwtService from '../../../Services/jwtService';
+import ResponseHandler from '../../../utils/responseHandealer';
 
 export const userLogin: RequestHandler = async (req, res, next) => {
     try {
@@ -19,7 +18,14 @@ export const userLogin: RequestHandler = async (req, res, next) => {
         const { email, password }: ILogin = req.body;
 
         const userResult = await db.query.users.findFirst({
-            where: eq(users?.email, email),
+            where: eq(users.email, email),
+            with: {
+                role: {
+                    columns: {
+                        name: true,
+                    },
+                },
+            },
         });
 
         if (!userResult) {
@@ -38,10 +44,10 @@ export const userLogin: RequestHandler = async (req, res, next) => {
 
         const access_token = JwtService.sign({
             id: userResult.id,
-            role: userResult.role,
+            role: userResult.role.name,
         });
         const refresh_token = JwtService.sign(
-            { id: userResult.id, role: userResult.role },
+            { id: userResult.id, role: userResult.role.name},
             '1y',
             config.REFRESH_SECRET,
         );
@@ -54,7 +60,7 @@ export const userLogin: RequestHandler = async (req, res, next) => {
                 name: userResult.name,
                 email: userResult.email,
                 email_verified: userResult.email_verified,
-                role: userResult.role,
+                role: userResult.role.name,
                 access_token,
                 refresh_token,
             }),
@@ -64,5 +70,3 @@ export const userLogin: RequestHandler = async (req, res, next) => {
         return next(error);
     }
 };
-
-
