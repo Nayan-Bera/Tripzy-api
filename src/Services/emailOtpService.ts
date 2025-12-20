@@ -29,12 +29,12 @@ const emailOtpService = async (
         let sentEmail = {
             from: config.SMTP_MAIL,
             to: email,
-            subject: 'Verify OTP - My Dear Property',
+            subject: 'Verify OTP - Tripzy',
             html: `
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>MyDearProperty Verify OTP</title>
+		<title>Tripzy Verify OTP</title>
 		<style>
 			body {
 				font-family: Arial, sans-serif;
@@ -136,7 +136,7 @@ const emailOtpService = async (
 			<div class="container">
 				<div class="logo">
 					<img
-						src="http://search-your-dream-minio-5ef0b0-157-173-219-77.traefik.me/website-assets/main-green.png"
+						src=""
 						alt="Logo" title="Logo" style="display:block" width="200" height="87"
 					/>
 				</div>
@@ -155,14 +155,14 @@ const emailOtpService = async (
 			<div class="footer">
 				<p>
 					You have received the email because you are registered at
-					<a class="link" href="https://mydearproperty.com/"
-						>mydearproperty.com</a
+					<a class="link" href=""
+						></a
 					>, to ensure the implementation
 				</p>
-				<a class="link" href="https://mydearproperty.com/privacy"
+				<a class="link" href=""
 					>Privacy Policy</a
 				><br /><br />
-				© 2025 MyDearProperty
+				© 2025 Tripzy
 			</div>
 		</div>
 	</body>
@@ -175,19 +175,19 @@ const emailOtpService = async (
                 .values({
                     userId: id,
                     code: createOTP.toString(),
-                   expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
-
+                    expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
                 })
                 .returning();
         } catch (error) {}
 
-		transporter.sendMail(sentEmail, (err, info) => {
+        transporter.sendMail(sentEmail, (err, info) => {
             if (err) {
-                console.error("Email sending failed:", err);
-                return res.status(500).json({ msg: 'Server is busy, try again later' });
+                console.error('Email sending failed:', err);
+                return res
+                    .status(500)
+                    .json({ msg: 'Server is busy, try again later' });
             }
 
-        
             return res.status(200).json({
                 msg: 'OTP sent successfully',
             });
