@@ -10,8 +10,8 @@ services:
       # Example DB envs – match what your Node app expects
       DB_HOST: db
       DB_PORT: 5432
-      DB_USER: Tripzy
-      DB_PASSWORD: Abc@123
+      DB_USER: tripzy
+      DB_PASSWORD: tripzy
       DB_NAME: TripzyDB
     depends_on:
       - db
@@ -22,8 +22,8 @@ services:
     image: postgres:latest
     container_name: tripzy-db
     environment:
-      POSTGRES_USER: Tripzy
-      POSTGRES_PASSWORD: Abc@123
+      POSTGRES_USER: tripzy
+      POSTGRES_PASSWORD: tripzy
       POSTGRES_DB: TripzyDB
     ports:
       - "5432:5432"
