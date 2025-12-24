@@ -18,3 +18,5 @@ export {default as contectus} from './contectus';
 export {default as payments} from './payments';
 export {default as bookingRooms} from './bookingRooms'
 export {default as role} from './role';
+export{default as permissions} from './permission';
+export {default as rolePermissions} from './rolePermission';
