@@ -3,87 +3,95 @@ import { eq } from 'drizzle-orm';
 import { RequestHandler } from 'express';
 import { config } from '../../../config';
 import db from '../../../db';
-import { refreshTokens, role, users } from '../../../db/schema';
+import { refreshTokens, users } from '../../../db/schema';
 import CustomErrorHandler from '../../../Services/customErrorHandaler';
 import emailOtpService from '../../../Services/emailOtpService';
 import JwtService from '../../../Services/jwtService';
 import ResponseHandler from '../../../utils/responseHandealer';
-import registerSchema from '../../../validators/auth/register.validator';
 
 export const userRegister: RequestHandler = async (req, res, next) => {
   try {
-    // const { error } = registerSchema.validate(req.body);
-    // if (error) return next(error);
+    const { name, email, password, phone_number } = req.body;
 
+    // 1️⃣ Check existing user
     const exist = await db.query.users.findFirst({
-      where: eq(users.email, req.body.email),
+      where: eq(users.email, email),
     });
 
     if (exist) {
-      return next(CustomErrorHandler.alreadyExist('This email address has already been used'));
+      return next(
+        CustomErrorHandler.alreadyExist(
+          'This email address has already been used'
+        )
+      );
     }
 
-    if (
-      req.body.role === 'admin || ADMIN' ||
-      req.body.role === 'superAdmin || SUPER_ADMIN'
-    ) {
-      return next(CustomErrorHandler.alreadyExist('You are not allowed to create an account'));
-    }
+    // 2️⃣ Hash password
+    const hashedPassword = await bcrypt.hash(
+      password,
+      Number(config.SALT)
+    );
 
-    const { name, email, password, roleId, phone_number }: any = req.body;
-    const hashedPassword = await bcrypt.hash(password, Number(config.SALT));
-
+    // 3️⃣ Create user (platformRole defaults to USER)
     const [saveUser] = await db
       .insert(users)
       .values({
         name,
         email,
         password: hashedPassword,
-        roleId,
+        phone_number,
+        // platformRole: 'USER' → default
       })
       .returning({
         id: users.id,
-        fullname: users.name,
+        name: users.name,
         email: users.email,
-        roleId: users.roleId,
+        platformRole: users.platformRole,
         email_verified: users.email_verified,
       });
 
-      const roleName = await db.query.role.findFirst({
-        where: eq(role.id, saveUser.roleId),
-      });
+    // 4️⃣ Send email OTP
+    emailOtpService(
+      { id: saveUser.id, email: saveUser.email },
+      res,
+      next
+    );
 
-    if (!roleName) {
-      return next(CustomErrorHandler.notFound('Role not found'));
-    }
+    // 5️⃣ Generate tokens (PLATFORM ROLE ONLY)
+    const access_token = JwtService.sign({
+      id: saveUser.id,
+      platformRole: saveUser.platformRole,
+    });
 
-    emailOtpService({ id: saveUser.id, email: saveUser.email }, res, next);
-
-    const access_token = JwtService.sign({ id: saveUser.id, role: roleName.name });
     const refresh_token = JwtService.sign(
-      { id: saveUser.id, role: roleName.name },
+      {
+        id: saveUser.id,
+        platformRole: saveUser.platformRole,
+      },
       '1y',
       config.REFRESH_SECRET
     );
 
-    await db.insert(refreshTokens).values({ token: refresh_token });
+    await db.insert(refreshTokens).values({
+      token: refresh_token,
+      userId: saveUser.id,
+    });
 
-    // DON'T return the Response object — send it and then return void
-    res.status(201).send(
+    // 6️⃣ Response
+    res.status(201).json(
       ResponseHandler(201, 'success', {
-        name: saveUser.fullname,
-        email: saveUser.email,
-        email_verified: saveUser.email_verified,
-        role: roleName.name,
+        user: {
+          id: saveUser.id,
+          name: saveUser.name,
+          email: saveUser.email,
+          platformRole: saveUser.platformRole,
+          email_verified: saveUser.email_verified,
+        },
         access_token,
         refresh_token,
       })
     );
-    return; // explicitly return void
   } catch (error) {
-    return next(error);
+    next(error);
   }
 };
-
-
-

@@ -20,7 +20,9 @@ import {
     unavailabilities,
     users,
     bookingRooms,
-    role
+    role,
+    hotelUsers,
+    rolePermissions,
 } from './schema';
 import { userRelations } from './schema/user';
 import { documentRelations } from './schema/documents';
@@ -41,6 +43,10 @@ import { unavailabilityRelations } from './schema/unAvailaibility';
 import { bookingRoomRelations } from './schema/bookingRooms';
 import { bookingRelations } from './schema/booking';
 import { roleRelations } from './schema/role';
+import { permission } from 'process';
+import { hotelUserRelations } from './schema/hotelUser';
+import { permissionRelations } from './schema/permission';
+import { rolePermissionRelations } from './schema/rolePermission';
 
 const schema = {
     users,
@@ -55,12 +61,18 @@ const schema = {
     documents,
     notifications,
     payouts,
-    payments,  
+    payments,
     bookings,
-    bookingRooms, 
+    bookingRooms,
     rooms,
     reviews,
     role,
+    hotelUsers,
+    permission,
+    rolePermissions,
+    hotelUserRelations,
+    permissionRelations,
+    rolePermissionRelations,
     roleRelations,
     roomAvailabilities,
     unavailabilities,
@@ -81,7 +93,7 @@ const schema = {
     roomRelations,
     unavailabilityRelations,
     bookingRelations,
-    bookingRoomRelations
+    bookingRoomRelations,
 } as const;
 
 export const sql = postgres(process.env.PG_DB_URL || '', { max: 1 });
