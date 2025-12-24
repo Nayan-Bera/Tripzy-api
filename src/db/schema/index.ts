@@ -20,3 +20,4 @@ export {default as bookingRooms} from './bookingRooms'
 export {default as role} from './role';
 export{default as permissions} from './permission';
 export {default as rolePermissions} from './rolePermission';
+export {default as hotelUsers} from './hotelUser';

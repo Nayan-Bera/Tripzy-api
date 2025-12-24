@@ -1,32 +1,35 @@
 import { relations } from 'drizzle-orm';
 import {
-    pgTable,
-    uuid,
-    text,
-    varchar,
-    timestamp,
     boolean,
+    pgTable,
+    text,
+    timestamp,
+    uuid,
+    varchar,
 } from 'drizzle-orm/pg-core';
-import hotels from './hotel';
 import bookings from './booking';
 import documents from './documents';
-import images from './image';
-import reviews from './reviews';
-import favorites from './favorites';
-import notifications from './notifications';
-import refreshTokens from './refreshtoken';
 import otps from './emailOtp';
 import familyMembers from './familymabers';
-import role from './role';
+import favorites from './favorites';
+import hotels from './hotel';
+import hotelUsers from './hotelUser';
+import images from './image';
+import notifications from './notifications';
+import refreshTokens from './refreshtoken';
+import reviews from './reviews';
 
 const users = pgTable('users', {
     id: uuid('id').defaultRandom().primaryKey().notNull(),
     name: text('name').notNull(),
     email: text('email').notNull().unique(),
     password: text('password').notNull(),
-    roleId: uuid('role_id')
-        .references(() => role.id)
-        .notNull(),
+    platformRole: varchar('platform_role', {
+        enum: ['USER', 'ADMIN', 'SUPER_ADMIN'],
+    })
+        .notNull()
+        .default('USER'),
+
     status: varchar('status', { enum: ['active', 'inactive'] })
         .notNull()
         .default('active'),
@@ -38,7 +41,8 @@ const users = pgTable('users', {
 });
 
 export const userRelations = relations(users, ({ one, many }) => ({
-    hotels: many(hotels),
+    ownedHotels: many(hotels),
+    hotelAccess: many(hotelUsers),
     bookings: many(bookings),
     documents: many(documents),
     familyMembers: many(familyMembers),
@@ -48,10 +52,6 @@ export const userRelations = relations(users, ({ one, many }) => ({
     notifications: many(notifications),
     refreshTokens: many(refreshTokens),
     otps: many(otps),
-    role: one(role, {
-    fields: [users.roleId],
-    references: [role.id],
-  }),
 }));
 
 export default users;

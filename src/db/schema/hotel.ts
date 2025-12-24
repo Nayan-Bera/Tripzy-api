@@ -3,23 +3,25 @@ import { pgTable, uuid, text, boolean } from "drizzle-orm/pg-core";
 import users from "./user";
 import properties from "./properties";
 import payouts from "./payouts";
+import hotelUsers from "./hotelUser";
 
 
  const hotels = pgTable("hotels", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
-  userId: uuid("user_id").notNull().references(() => users.id),
+  ownerId: uuid("owner_id").notNull().references(() => users.id),
   name: text("name").notNull(),
   contact: text("contact").notNull(),
   verified: boolean("verified").notNull().default(false),
 });
 
 export const hotelRelations = relations(hotels, ({ one, many }) => ({
-  user: one(users, {
-    fields: [hotels.userId],
+  owner: one(users, {
+    fields: [hotels.ownerId],
     references: [users.id],
   }),
   properties: many(properties),
   payouts: many(payouts),
+  staff: many(hotelUsers),
 }));
 
 export default hotels;

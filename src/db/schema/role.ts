@@ -6,6 +6,8 @@ import {
     varchar
 } from 'drizzle-orm/pg-core';
 import users from './user';
+import rolePermissions from './rolePermission';
+import hotelUsers from './hotelUser';
 
 
 const role = pgTable('role', {
@@ -16,7 +18,8 @@ const role = pgTable('role', {
 });
 
 export const roleRelations = relations(role, ({ many }) => ({
-   user: many(users),
+   hotelUsers: many(hotelUsers),
+   rolePermissions: many(rolePermissions),
 }));
 
 export default role;
