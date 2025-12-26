@@ -40,7 +40,7 @@ export const userRegister: RequestHandler = async (req, res, next) => {
         email,
         password: hashedPassword,
         phone_number,
-        // platformRole: 'USER' → default
+        platformRole: 'user' 
       })
       .returning({
         id: users.id,

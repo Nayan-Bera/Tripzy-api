@@ -25,10 +25,10 @@ const users = pgTable('users', {
     email: text('email').notNull().unique(),
     password: text('password').notNull(),
     platformRole: varchar('platform_role', {
-        enum: ['USER', 'ADMIN', 'SUPER_ADMIN'],
+        enum: ['user', 'admin', 'super_admin', 'hotel'],
     })
         .notNull()
-        .default('USER'),
+        .default('user'),
 
     status: varchar('status', { enum: ['active', 'inactive'] })
         .notNull()
