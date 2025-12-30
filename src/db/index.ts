@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import {
@@ -43,9 +44,8 @@ import { unavailabilityRelations } from './schema/unAvailaibility';
 import { bookingRoomRelations } from './schema/bookingRooms';
 import { bookingRelations } from './schema/booking';
 import { roleRelations } from './schema/role';
-import { permission } from 'process';
 import { hotelUserRelations } from './schema/hotelUser';
-import { permissionRelations } from './schema/permission';
+import permissions, { permissionRelations } from './schema/permission';
 import { rolePermissionRelations } from './schema/rolePermission';
 
 const schema = {
@@ -68,7 +68,7 @@ const schema = {
     reviews,
     role,
     hotelUsers,
-    permission,
+    permissions,
     rolePermissions,
     hotelUserRelations,
     permissionRelations,
