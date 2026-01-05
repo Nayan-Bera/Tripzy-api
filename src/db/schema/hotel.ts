@@ -4,6 +4,8 @@ import users from "./user";
 import properties from "./properties";
 import payouts from "./payouts";
 import hotelUsers from "./hotelUser";
+import hotelPolicies from "./hotel_policies";
+import hotelDocuments from "./hotel_documents";
 
 
  const hotels = pgTable("hotels", {
@@ -22,6 +24,8 @@ export const hotelRelations = relations(hotels, ({ one, many }) => ({
   properties: many(properties),
   payouts: many(payouts),
   staff: many(hotelUsers),
+  hotelPolicies: many(hotelPolicies),
+  hotelDocuments: many(hotelDocuments),
 }));
 
 export default hotels;

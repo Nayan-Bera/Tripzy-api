@@ -26,9 +26,7 @@ const users = pgTable('users', {
     password: text('password').notNull(),
     platformRole: varchar('platform_role', {
         enum: ['user', 'admin', 'super_admin'],
-    })
-        .notNull()
-        .default('user'),
+    }).notNull().default('user'),
 
     status: varchar('status', { enum: ['active', 'inactive'] })
         .notNull()
@@ -52,6 +50,7 @@ export const userRelations = relations(users, ({ one, many }) => ({
     notifications: many(notifications),
     refreshTokens: many(refreshTokens),
     otps: many(otps),
+     
 }));
 
 export default users;
