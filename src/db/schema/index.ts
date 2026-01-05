@@ -21,3 +21,5 @@ export { default as role } from './role';
 export { default as permissions } from './permission';
 export { default as rolePermissions } from './rolePermission';
 export { default as hotelUsers } from './hotelUser';
+export {default as amenities} from './aminities';
+export {default as hotelAmenities} from './hotelAmenities';
