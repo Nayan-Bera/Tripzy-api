@@ -1,33 +1,23 @@
-import jwt, { JwtPayload, SignOptions } from 'jsonwebtoken';
-import { IJwtPayload } from '../@types/payload.type';
-import { config } from '../config/index';
+import jwt, { JwtPayload, SignOptions } from "jsonwebtoken";
+import { IJwtPayload } from "../@types/payload.type";
+import { config } from "../config";
 
 class JwtService {
-    static sign(
-        payload: string | Buffer | object,
-        expiry: SignOptions['expiresIn'] = '1hr',
-        secret: string = config.ACCESS_SECRET,
-    ): string {
-        const options: SignOptions = { expiresIn: expiry };
-        return jwt.sign(payload, secret, options);
-    }
+  static sign(
+    payload: IJwtPayload,
+    expiresIn: SignOptions["expiresIn"] = "1h",
+    secret: string = config.ACCESS_SECRET
+  ): string {
+    return jwt.sign(payload, secret, { expiresIn });
+  }
 
-    static verify(
-        token: string,
-        secret: string = config.ACCESS_SECRET,
-    ): string | JwtPayload {
-        try {
-            const { id, role } = jwt.verify(token, secret) as IJwtPayload;
-            return {
-                id,
-                role,
-            };
-        } catch (error) {
-            return {
-                error,
-            };
-        }
-    }
+  static verify(
+    token: string,
+    secret: string = config.ACCESS_SECRET
+  ): IJwtPayload {
+    
+    return jwt.verify(token, secret) as IJwtPayload;
+  }
 }
 
 export default JwtService;

@@ -1,5 +1,5 @@
 export interface IJwtPayload {
     id: string;
-    role: string;
+    platformRole: string;
     error?: any;
 } 
