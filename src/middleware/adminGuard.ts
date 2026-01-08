@@ -21,7 +21,7 @@ const adminGuard: RequestHandler = (req, res, next) => {
       return;
     }
 
-    // ✅ attach user to request
+   
     req.user = payload;
 
     next();

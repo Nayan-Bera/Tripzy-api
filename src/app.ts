@@ -10,7 +10,7 @@ import passport from 'passport';
 // Import routes
 // import { bookingRoutes, userRoutes } from './routes';
 import { config } from './config';
-import { authRoutes, otpRoutes, roleRoutes } from './routes';
+import { adminHotelRoutes, authRoutes, otpRoutes, roleRoutes } from './routes';
 import { role } from './db/schema';
 // import propertyRoutes from './routes/property.route';
 // import paymentRoutes from './routes/payment.route';
@@ -75,6 +75,7 @@ app.get('/health', (req: Request, res: Response) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/otp', otpRoutes);
 app.use('/api/role', roleRoutes);
+app.use('/api/admin/hotel', adminHotelRoutes);
 
 // Google OAuth routes
 // app.get(

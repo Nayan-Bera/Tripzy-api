@@ -1,5 +1,4 @@
 export interface IJwtPayload {
-    id: string;
-    platformRole: string;
-    error?: any;
-} 
+  id: string;
+  platformRole: "user" | "admin" | "super_admin";
+}

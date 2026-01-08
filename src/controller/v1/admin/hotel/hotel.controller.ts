@@ -18,7 +18,7 @@ export const createHotel: RequestHandler = async (req, res, next) => {
 
     if (!owner) {
       res.status(404).json({
-        message: 'Owner not found',
+        message: 'User not found',
       });
       return;
     }
