@@ -5,7 +5,7 @@ import { config } from "../config";
 class JwtService {
   static sign(
     payload: IJwtPayload,
-    expiresIn: SignOptions["expiresIn"] = "1h",
+    expiresIn: SignOptions["expiresIn"] = "1d",
     secret: string = config.ACCESS_SECRET
   ): string {
     return jwt.sign(payload, secret, { expiresIn });

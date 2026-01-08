@@ -10,7 +10,7 @@ import CustomErrorHandler from "../../../../Services/customErrorHandaler";
 export const getProviderHotels: RequestHandler = async (req, res, next) => {
   try {
     const userId = req?.user?.id;
-
+  console.log(userId);
     if (!userId) {
       return next(CustomErrorHandler.unAuthorized('User not found'));
     }
