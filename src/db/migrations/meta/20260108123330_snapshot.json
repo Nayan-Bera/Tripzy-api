@@ -1,9 +1,43 @@
 {
-  "id": "20d9d18b-7723-4d8a-8eed-e95274c3c726",
+  "id": "d1d28ca0-97cc-4dea-9de4-cf84d4ac17d1",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.amenities": {
+      "name": "amenities",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "amenities_name_unique": {
+          "name": "amenities_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "name"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.booking_rooms": {
       "name": "booking_rooms",
       "schema": "",
@@ -429,6 +463,66 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.hotel_amenities": {
+      "name": "hotel_amenities",
+      "schema": "",
+      "columns": {
+        "hotel_id": {
+          "name": "hotel_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "amenity_id": {
+          "name": "amenity_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "hotel_amenities_hotel_id_hotels_id_fk": {
+          "name": "hotel_amenities_hotel_id_hotels_id_fk",
+          "tableFrom": "hotel_amenities",
+          "tableTo": "hotels",
+          "columnsFrom": [
+            "hotel_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "hotel_amenities_amenity_id_amenities_id_fk": {
+          "name": "hotel_amenities_amenity_id_amenities_id_fk",
+          "tableFrom": "hotel_amenities",
+          "tableTo": "amenities",
+          "columnsFrom": [
+            "amenity_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "hotel_amenities_hotel_id_amenity_id_pk": {
+          "name": "hotel_amenities_hotel_id_amenity_id_pk",
+          "columns": [
+            "hotel_id",
+            "amenity_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.hotel_users": {
       "name": "hotel_users",
       "schema": "",
@@ -558,6 +652,13 @@
           "primaryKey": false,
           "notNull": true,
           "default": false
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'inactive'"
         }
       },
       "indexes": {},
@@ -990,15 +1091,15 @@
           "primaryKey": false,
           "notNull": true
         },
-        "zip": {
-          "name": "zip",
+        "country": {
+          "name": "country",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "amenities": {
-          "name": "amenities",
-          "type": "jsonb",
+        "zip": {
+          "name": "zip",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },

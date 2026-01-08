@@ -8,5 +8,6 @@ import {  adminHotelController } from "../../../controller";
 const router = Router();
 
 router.post("/create", adminGuard, adminHotelController.createHotel);
+router.get("/all", adminGuard, adminHotelController.getAllHotel);
 
 export default router;

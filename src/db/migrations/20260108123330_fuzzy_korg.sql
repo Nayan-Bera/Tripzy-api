@@ -1,3 +1,9 @@
+CREATE TABLE "amenities" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"name" varchar NOT NULL,
+	CONSTRAINT "amenities_name_unique" UNIQUE("name")
+);
+--> statement-breakpoint
 CREATE TABLE "booking_rooms" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"booking_id" uuid NOT NULL,
@@ -52,6 +58,12 @@ CREATE TABLE "favorites" (
 	"property_id" uuid NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "hotel_amenities" (
+	"hotel_id" uuid NOT NULL,
+	"amenity_id" uuid NOT NULL,
+	CONSTRAINT "hotel_amenities_hotel_id_amenity_id_pk" PRIMARY KEY("hotel_id","amenity_id")
+);
+--> statement-breakpoint
 CREATE TABLE "hotel_users" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" uuid NOT NULL,
@@ -66,7 +78,8 @@ CREATE TABLE "hotels" (
 	"owner_id" uuid NOT NULL,
 	"name" text NOT NULL,
 	"contact" text NOT NULL,
-	"verified" boolean DEFAULT false NOT NULL
+	"verified" boolean DEFAULT false NOT NULL,
+	"status" varchar DEFAULT 'inactive' NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "images" (
@@ -124,8 +137,8 @@ CREATE TABLE "properties" (
 	"address" text NOT NULL,
 	"city" text NOT NULL,
 	"state" text NOT NULL,
+	"country" text NOT NULL,
 	"zip" text NOT NULL,
-	"amenities" jsonb NOT NULL,
 	"location" text NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
@@ -210,6 +223,8 @@ ALTER TABLE "documents" ADD CONSTRAINT "documents_user_id_users_id_fk" FOREIGN K
 ALTER TABLE "family_members" ADD CONSTRAINT "family_members_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "favorites" ADD CONSTRAINT "favorites_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "favorites" ADD CONSTRAINT "favorites_property_id_properties_id_fk" FOREIGN KEY ("property_id") REFERENCES "public"."properties"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "hotel_amenities" ADD CONSTRAINT "hotel_amenities_hotel_id_hotels_id_fk" FOREIGN KEY ("hotel_id") REFERENCES "public"."hotels"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "hotel_amenities" ADD CONSTRAINT "hotel_amenities_amenity_id_amenities_id_fk" FOREIGN KEY ("amenity_id") REFERENCES "public"."amenities"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "hotel_users" ADD CONSTRAINT "hotel_users_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "hotel_users" ADD CONSTRAINT "hotel_users_hotel_id_hotels_id_fk" FOREIGN KEY ("hotel_id") REFERENCES "public"."hotels"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "hotel_users" ADD CONSTRAINT "hotel_users_role_id_role_id_fk" FOREIGN KEY ("role_id") REFERENCES "public"."role"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint

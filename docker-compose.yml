@@ -1,29 +1,29 @@
 version: '3.8'
 
 services:
-  app:
-    build: .
-    container_name: tripzy-app
-    ports:
-      - "8000:8000"
-    environment:
-      # Example DB envs – match what your Node app expects
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_USER: tripzy
-      DB_PASSWORD: tripzy
-      DB_NAME: TripzyDB
-    depends_on:
-      - db
-    networks:
-      - backend-network
+  # app:
+  #   build: .
+  #   container_name: tripzy-app
+  #   ports:
+  #     - "8000:8000"
+  #   environment:
+  #     # Example DB envs – match what your Node app expects
+  #     DB_HOST: db
+  #     DB_PORT: 5432
+  #     DB_USER: tripzy
+  #     DB_PASSWORD: tripzy
+  #     DB_NAME: TripzyDB
+  #   depends_on:
+  #     - db
+  #   networks:
+  #     - backend-network
 
   db:
     image: postgres:latest
     container_name: tripzy-db
     environment:
-      POSTGRES_USER: tripzy
-      POSTGRES_PASSWORD: tripzy
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
       POSTGRES_DB: TripzyDB
     ports:
       - "5432:5432"

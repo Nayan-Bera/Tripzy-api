@@ -24,6 +24,8 @@ import {
     role,
     hotelUsers,
     rolePermissions,
+    amenities,
+    hotelAmenities,
 } from './schema';
 import { userRelations } from './schema/user';
 import { documentRelations } from './schema/documents';
@@ -47,6 +49,8 @@ import { roleRelations } from './schema/role';
 import { hotelUserRelations } from './schema/hotelUser';
 import permissions, { permissionRelations } from './schema/permission';
 import { rolePermissionRelations } from './schema/rolePermission';
+import { amenitiesRelations } from "./schema/aminities";
+import { hotelAmenitiesRelations } from "./schema/hotelAmenities";
 
 const schema = {
     users,
@@ -69,6 +73,10 @@ const schema = {
     role,
     hotelUsers,
     permissions,
+    amenities,
+    hotelAmenities,
+    hotelAmenitiesRelations,
+    amenitiesRelations,
     rolePermissions,
     hotelUserRelations,
     permissionRelations,

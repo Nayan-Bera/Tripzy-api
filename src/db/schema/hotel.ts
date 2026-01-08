@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { pgTable, uuid, text, boolean } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, boolean, varchar } from "drizzle-orm/pg-core";
 import users from "./user";
 import properties from "./properties";
 import payouts from "./payouts";
@@ -14,6 +14,11 @@ import hotelDocuments from "./hotel_documents";
   name: text("name").notNull(),
   contact: text("contact").notNull(),
   verified: boolean("verified").notNull().default(false),
+  status: varchar("status", {
+    enum: ["active", "inactive"],
+  })
+    .default("inactive")
+    .notNull(),
 });
 
 export const hotelRelations = relations(hotels, ({ one, many }) => ({

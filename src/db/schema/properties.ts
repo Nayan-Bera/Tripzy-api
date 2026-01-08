@@ -16,8 +16,8 @@ import favorites from "./favorites";
   address: text("address").notNull(),
   city: text("city").notNull(),
   state: text("state").notNull(),
+  country: text("country").notNull(),
   zip: text("zip").notNull(),
-  amenities: jsonb("amenities").notNull(),
   location: text("location").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
