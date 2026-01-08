@@ -24,7 +24,6 @@
     "@types/compression": "^1.8.0",
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.18",
-    "@types/dotenv": "^8.2.3",
     "@types/helmet": "^4.0.0",
     "@types/joi": "^17.2.3",
     "@types/jsonwebtoken": "^9.0.9",
@@ -61,6 +60,7 @@
     "zod": "^4.1.13"
   },
   "devDependencies": {
+    "@types/dotenv": "^8.2.3",
     "@types/jest": "^29.5.12",
     "@types/node": "^22.15.18",
     "drizzle-kit": "^0.30.4",
