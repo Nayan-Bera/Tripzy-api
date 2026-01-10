@@ -115,8 +115,14 @@ export const getAllHotel: RequestHandler = async (req, res, next) => {
 };
 export const updateVerifyHotel: RequestHandler = async (req, res, next) => {
   try {
+       const {id} = req.params
+      await db.update(hotels).set({verified: true}).where(eq(hotels.id, id)).returning();
+
+      res.status(200).json({
+        message: "Hotel verified successfully",
+      });
     
   } catch (error) {
-    
+    next(error);
   }
 }
