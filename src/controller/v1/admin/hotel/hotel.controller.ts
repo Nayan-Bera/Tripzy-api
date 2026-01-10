@@ -113,4 +113,10 @@ export const getAllHotel: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
-
+export const updateVerifyHotel: RequestHandler = async (req, res, next) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+}
