@@ -1,7 +1,7 @@
 // src/controllers/provider/getProviderHotels.controller.ts
 import { RequestHandler } from "express";
 import { eq } from "drizzle-orm";
-import { hotelUsers } from "../../../../db/schema";
+import { hotels, hotelUsers } from "../../../../db/schema";
 import db from "../../../../db";
 import CustomErrorHandler from "../../../../Services/customErrorHandaler";
 
@@ -88,6 +88,22 @@ export const getProviderHotels: RequestHandler = async (req, res, next) => {
     });
   } catch (error) {
     console.error("Provider hotels error:", error);
+    next(error);
+  }
+};
+export const UpdateHotelStatus: RequestHandler = async (req, res, next) => {
+  try {
+    const hotelId = req.params.id;
+    const status = req.body.status;
+
+    await db
+      .update(hotels)
+      .set({ status })
+      .where(eq(hotels.id, hotelId))
+      .returning();
+
+    res.status(200).json({ message: "Hotel status updated successfully" });
+  } catch (error) {
     next(error);
   }
 };
