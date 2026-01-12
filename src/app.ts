@@ -78,6 +78,8 @@ app.use('/api/role', roleRoutes);
 app.use('/api/admin/hotel', adminHotelRoutes);
 app.use('/api/provider', providerHotelRoutes);
 
+
+
 // Google OAuth routes
 // app.get(
 //     '/auth/google',
