@@ -12,6 +12,7 @@ import passport from 'passport';
 import { config } from './config';
 import { adminHotelRoutes, authRoutes, otpRoutes, providerHotelRoutes, roleRoutes } from './routes';
 import { role } from './db/schema';
+
 // import propertyRoutes from './routes/property.route';
 // import paymentRoutes from './routes/payment.route';
 // import reviewRoutes from './routes/review.route';
