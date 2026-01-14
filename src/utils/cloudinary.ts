@@ -1,37 +1,33 @@
-import { v2 as cloudinary } from 'cloudinary';
-import {config} from '../config';
-import logger from './logger';
+import cloudinary from "../config/cloudinary";
+import fs from "fs";
 
-cloudinary.config({
-    cloud_name: config.CLOUDINARY_NAME,
-    api_key: config.CLOUDINARY_APIKEY,
-    api_secret: config.CLOUDINARY_APISECRET,
-});
-
-export const uploadImage = async (file: string, folder: string = 'findyourhotel'): Promise<string> => {
-    try {
-        const result = await cloudinary.uploader.upload(file, {
-            folder,
-            resource_type: 'auto'
-        });
-        return result.secure_url;
-    } catch (error) {
-        logger.error('Error uploading image to Cloudinary:', error);
-        throw new Error('Failed to upload image');
-    }
+const safeUnlink = (path?: string) => {
+  if (path && fs.existsSync(path)) {
+    fs.unlinkSync(path);
+  }
 };
 
-export const deleteImage = async (publicId: string): Promise<void> => {
-    try {
-        await cloudinary.uploader.destroy(publicId);
-    } catch (error) {
-        logger.error('Error deleting image from Cloudinary:', error);
-        throw new Error('Failed to delete image');
-    }
+export const uploadToCloudinary = async (
+  localFilePath: string,
+  folder: string
+) => {
+  try {
+    const res = await cloudinary.uploader.upload(localFilePath, {
+      resource_type: "auto",
+      folder,
+    });
+
+    safeUnlink(localFilePath);
+    return res.secure_url;
+  } catch (error) {
+    safeUnlink(localFilePath);
+    throw error;
+  }
 };
 
-export const getImageUrl = (publicId: string, options: any = {}): string => {
-    return cloudinary.url(publicId, options);
-};
+export const deleteFromCloudinary = async (url: string) => {
+  const match = url.match(/upload\/(?:v\d+\/)?(.+)\./);
+  if (!match) return;
 
-export default cloudinary; 
+  await cloudinary.uploader.destroy(match[1]);
+};
