@@ -2,8 +2,10 @@ import { seedPermissions } from './permissions.seed';
 import { seedRoles } from './roles.seed';
 import { seedRolePermissions } from './rolePermissions.seed';
 import usersHotelsSeeder from './users.seed';
+import amenitiesSeeder from './aminitiea.seed';
 
 async function runSeeds() {
+    await amenitiesSeeder.run();
     await seedPermissions();
     await seedRoles();
     await seedRolePermissions();

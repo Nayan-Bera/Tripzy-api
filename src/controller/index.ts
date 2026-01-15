@@ -6,3 +6,4 @@ export * as otpController from './v1/OtpVerification/OtpVerification.controller'
 export * as roleController from './v1/role/role.controller';
 export * as adminHotelController from './v1/admin/hotel/hotel.controller';
 export * as providerHotelController from './v1/provider/hotel/hotel.controller';
+export * as aminitiesController from './v1/admin/aminities/amenities.controller';

@@ -10,7 +10,7 @@ import passport from 'passport';
 // Import routes
 // import { bookingRoutes, userRoutes } from './routes';
 import { config } from './config';
-import { adminHotelRoutes, authRoutes, otpRoutes, providerHotelRoutes, roleRoutes } from './routes';
+import { adminHotelRoutes, aminitiesRoutes, authRoutes, otpRoutes, providerHotelRoutes, roleRoutes } from './routes';
 import { role } from './db/schema';
 
 // import propertyRoutes from './routes/property.route';
@@ -78,6 +78,7 @@ app.use('/api/otp', otpRoutes);
 app.use('/api/role', roleRoutes);
 app.use('/api/admin/hotel', adminHotelRoutes);
 app.use('/api/provider', providerHotelRoutes);
+app.use('/api/admin/aminities', aminitiesRoutes);
 
 
 
