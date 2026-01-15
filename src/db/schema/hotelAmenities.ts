@@ -14,6 +14,8 @@ const hotelAmenities = pgTable(
   })
 );
 
+
+
 export default hotelAmenities;
 
 export const hotelAmenitiesRelations = relations(hotelAmenities, ({ one }) => ({

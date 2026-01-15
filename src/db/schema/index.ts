@@ -23,3 +23,5 @@ export { default as rolePermissions } from './rolePermission';
 export { default as hotelUsers } from './hotelUser';
 export {default as amenities} from './aminities';
 export {default as hotelAmenities} from './hotelAmenities';
+export {default as hotelPolicies} from './hotel_policies';
+export {default as hotelDocuments} from './hotel_documents';

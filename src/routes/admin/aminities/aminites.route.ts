@@ -5,7 +5,7 @@ import { aminitiesController } from '../../../controller';
 
 const router = Router();
 
-router.post('/all', adminGuard, aminitiesController.getAllAmenities);
-router.get('/create', adminGuard, aminitiesController.addAminities);
+router.get('/all', aminitiesController.getAllAmenities);
+router.post('/create',adminGuard, aminitiesController.addAminities);
 
 export default router;
