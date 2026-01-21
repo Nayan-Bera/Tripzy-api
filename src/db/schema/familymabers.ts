@@ -1,6 +1,7 @@
 import { relations } from "drizzle-orm";
 import { pgTable, uuid, text } from "drizzle-orm/pg-core";
 import users from "./user";
+import documents from "./documents";
 
  const familyMembers = pgTable("family_members", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
@@ -10,11 +11,12 @@ import users from "./user";
   dateOfBirth: text("date_of_birth").notNull(),
 });
 
-export const familyMemberRelations = relations(familyMembers, ({ one }) => ({
+export const familyMemberRelations = relations(familyMembers, ({ one,many}) => ({
   user: one(users, {
     fields: [familyMembers.userId],
     references: [users.id],
   }),
+   documents: many(documents)
 }));
 
 export default familyMembers;
