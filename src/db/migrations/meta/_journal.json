@@ -15,6 +15,13 @@
       "when": 1768492294426,
       "tag": "20260115155134_absent_wraith",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1778169916114,
+      "tag": "20260507160516_curly_tempest",
+      "breakpoints": true
     }
   ]
 }

@@ -3,6 +3,7 @@ import { seedRoles } from './roles.seed';
 import { seedRolePermissions } from './rolePermissions.seed';
 import usersHotelsSeeder from './users.seed';
 import amenitiesSeeder from './aminitiea.seed';
+import demoHotelsSeeder from './demoHotels.seed';
 
 async function runSeeds() {
     await amenitiesSeeder.run();
@@ -10,6 +11,7 @@ async function runSeeds() {
     await seedRoles();
     await seedRolePermissions();
     await usersHotelsSeeder.run();
+    await demoHotelsSeeder.run();
     process.exit(0);
 }
 

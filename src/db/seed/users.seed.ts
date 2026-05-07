@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import db from "../index";
 
 import users from "../schema/user";
@@ -9,6 +9,34 @@ import hotelUsers from "../schema/hotelUser";
 
 const PASSWORD = "Abc@123";
 const SALT = 10;
+
+type DemoUser = typeof users.$inferInsert;
+
+async function findOrCreateUser(data: DemoUser) {
+  const existing = await db.query.users.findFirst({
+    where: eq(users.email, data.email),
+  });
+
+  if (existing) {
+    return existing;
+  }
+
+  const [created] = await db.insert(users).values(data).returning();
+  return created;
+}
+
+async function findOrCreateHotel(data: typeof hotels.$inferInsert) {
+  const existing = await db.query.hotels.findFirst({
+    where: and(eq(hotels.name, data.name), eq(hotels.ownerId, data.ownerId)),
+  });
+
+  if (existing) {
+    return existing;
+  }
+
+  const [created] = await db.insert(hotels).values(data).returning();
+  return created;
+}
 
 export default {
   name: "Users + Hotels Seeder",
@@ -32,54 +60,55 @@ export default {
 
     /* ================= USERS ================= */
 
-    const [superAdmin] = await db.insert(users).values({
+    await findOrCreateUser({
       name: "Super Admin",
       email: "super@demo.com",
       password: hashedPassword,
       platformRole: "super_admin",
       email_verified: true,
-    }).returning();
+    });
 
-    const [admin] = await db.insert(users).values({
+    await findOrCreateUser({
       name: "Admin User",
       email: "admin@demo.com",
       password: hashedPassword,
       platformRole: "admin",
       email_verified: true,
-    }).returning();
+    });
 
-    const [normalUser] = await db.insert(users).values({
+    await findOrCreateUser({
       name: "Normal User",
       email: "user@demo.com",
       password: hashedPassword,
       platformRole: "user",
       email_verified: true,
-    }).returning();
+    });
 
-    const [hotelOwner] = await db.insert(users).values({
+    const hotelOwner = await findOrCreateUser({
       name: "Hotel Owner",
       email: "owner@demo.com",
       password: hashedPassword,
       platformRole: "user",
       email_verified: true,
-    }).returning();
+    });
 
-    const [hotelStaff] = await db.insert(users).values({
+    const hotelStaff = await findOrCreateUser({
       name: "Hotel Staff",
       email: "staff@demo.com",
       password: hashedPassword,
       platformRole: "user",
       email_verified: true,
-    }).returning();
+    });
 
     /* ================= HOTEL ================= */
 
-    const [demoHotel] = await db.insert(hotels).values({
+    const demoHotel = await findOrCreateHotel({
       name: "Demo Hotel",
       contact: "+1-555-123-4567",
       ownerId: hotelOwner.id,
       verified: true,
-    }).returning();
+      status: "active",
+    });
 
     /* ================= HOTEL ACCESS ================= */
 
@@ -94,7 +123,7 @@ export default {
         hotelId: demoHotel.id,
         roleId: staffRole.id, // HOTEL_STAFF
       },
-    ]);
+    ]).onConflictDoNothing();
 
     console.log("✅ Users + Hotels seeded");
     console.log("🔑 Password:", PASSWORD);
