@@ -280,6 +280,213 @@ Body:
 }
 ```
 
+## Public Browse APIs
+
+These APIs do not require auth.
+
+### `GET /api/public/properties`
+
+Query params:
+
+| Param | Example | Notes |
+| --- | --- | --- |
+| `q` | `beach` | Searches title, description, address, city |
+| `city` | `Goa` | Case-insensitive city filter |
+| `state` | `Goa` | Case-insensitive state filter |
+| `country` | `India` | Case-insensitive country filter |
+
+Returns property cards with hotel, images, rooms, `averageRating`, `reviewCount`, and `minPricePerDay`.
+
+### `GET /api/public/properties/:id`
+
+Returns a full property detail payload with:
+
+- hotel info
+- property images
+- rooms
+- room images
+- room weekly availability
+- hotel amenities
+- hotel policies
+- reviews with user name/avatar
+- `averageRating`, `reviewCount`, `minPricePerDay`
+
+### `GET /api/public/hotels/:id`
+
+Returns hotel details, owner info, properties, amenities, and policies.
+
+## User Profile APIs
+
+Require `Authorization: Bearer <access_token>`.
+
+### `GET /api/users/me`
+
+Returns the logged-in user's profile.
+
+### `PUT /api/users/me`
+
+Body:
+
+```json
+{
+  "name": "Updated Name",
+  "phone_number": "+919999999999",
+  "avatar": "https://example.com/avatar.jpg"
+}
+```
+
+## Favorites APIs
+
+Require auth.
+
+### `GET /api/favorites`
+
+Returns the logged-in user's saved properties.
+
+### `POST /api/favorites`
+
+Body:
+
+```json
+{
+  "propertyId": "property-uuid"
+}
+```
+
+### `DELETE /api/favorites/:propertyId`
+
+Removes a property from favorites.
+
+## Reviews APIs
+
+### `GET /api/properties/:propertyId/reviews`
+
+Public. Returns reviews for a property.
+
+### `POST /api/properties/:propertyId/reviews`
+
+Requires auth.
+
+Body:
+
+```json
+{
+  "rating": 5,
+  "comment": "Clean rooms and smooth check-in."
+}
+```
+
+If the same user already reviewed the property, this updates their review.
+
+### `DELETE /api/reviews/:id`
+
+Requires auth. Deletes the logged-in user's review.
+
+## Booking APIs
+
+Require auth.
+
+### `GET /api/bookings`
+
+Returns the logged-in user's bookings with property, hotel, rooms, and payments.
+
+### `POST /api/bookings`
+
+Creates a pending booking and a pending payment record.
+
+Body:
+
+```json
+{
+  "propertyId": "property-uuid",
+  "checkIn": "2026-06-15T14:00:00.000Z",
+  "checkOut": "2026-06-17T11:00:00.000Z",
+  "paymentMethod": "card",
+  "rooms": [
+    {
+      "roomId": "room-uuid",
+      "quantity": 1
+    }
+  ]
+}
+```
+
+Allowed `paymentMethod`: `card`, `upi`, `wallet`.
+
+### `GET /api/bookings/:id`
+
+Returns one booking for the logged-in user.
+
+### `PUT /api/bookings/:id/cancel`
+
+Marks the logged-in user's booking as `cancelled`.
+
+## Provider Property And Room APIs
+
+Require `Authorization: Bearer <owner/staff token>`.
+
+### `GET /api/provider/hotels/:hotelId/properties`
+
+Returns properties for a hotel the logged-in provider can access.
+
+### `POST /api/provider/hotels/:hotelId/properties`
+
+Body:
+
+```json
+{
+  "title": "Beach Stay",
+  "description": "Sea view rooms",
+  "address": "Candolim Beach Road",
+  "city": "Goa",
+  "state": "Goa",
+  "country": "India",
+  "zip": "403516",
+  "location": "15.5525,73.7517",
+  "imageUrls": ["https://example.com/property.jpg"]
+}
+```
+
+### `PUT /api/provider/properties/:propertyId`
+
+Partial update. Body can include any property fields from create.
+
+### `DELETE /api/provider/properties/:propertyId`
+
+Deletes a provider-owned property. Avoid calling this on properties with bookings unless the backend is extended with cascading/dependency handling.
+
+### `POST /api/provider/properties/:propertyId/rooms`
+
+Body:
+
+```json
+{
+  "name": "Deluxe Double",
+  "type": "double",
+  "pricePerHour": "799.00",
+  "pricePerDay": "3999.00",
+  "capacity": 2,
+  "imageUrls": ["https://example.com/room.jpg"],
+  "availabilities": [
+    {
+      "dayOfWeek": 1,
+      "openTime": "00:00",
+      "closeTime": "23:59"
+    }
+  ]
+}
+```
+
+Allowed room `type`: `single`, `double`, `suite`.
+
+### `PUT /api/provider/rooms/:roomId`
+
+Partial update for room fields.
+
+### `DELETE /api/provider/rooms/:roomId`
+
+Deletes a provider-owned room. Avoid deleting rooms attached to bookings unless dependency handling is added.
+
 ## Health APIs
 
 ### `GET /`
@@ -301,16 +508,18 @@ Returns server status, environment, uptime, and timestamp.
 - Amenities list and create.
 - Drizzle schemas for hotels, properties, rooms, bookings, images, reviews, amenities, policies, documents, payments, payouts, favorites, users, roles, and permissions.
 - Seed data for users, roles, permissions, amenities, and frontend demo hotels/properties/rooms.
+- Public property list/detail and hotel detail.
+- User profile read/update.
+- Favorites list/add/remove.
+- Reviews list/create/update/delete.
+- Booking list/detail/create/cancel.
+- Provider property CRUD and room CRUD.
 
 ## Still Missing For Frontend
 
-- Public hotel/property search and listing API.
-- Public property detail API with nested hotel, rooms, images, amenities, policies, reviews, and availability.
-- Room availability search by date/time/city.
-- Booking create/update/cancel endpoints.
-- Payment checkout/webhook endpoints.
-- Favorites endpoints.
-- Reviews create/list endpoints.
-- User profile endpoints.
-- Admin/provider APIs for CRUD on properties, rooms, room images, policies, and amenities after initial verification.
+- Dedicated room availability search by date/time/city with conflict checks.
+- Real payment checkout/webhook endpoints.
+- Favorites table does not have a DB unique constraint yet, so duplicates are prevented in controller logic only.
+- Admin/provider APIs for updating hotel policies, hotel amenities, and hotel documents after initial verification.
+- Image upload APIs for property/room images; current provider create endpoints accept image URLs.
 - Error handler is imported in places but not mounted globally in `app.ts`.

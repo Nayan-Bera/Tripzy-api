@@ -10,8 +10,20 @@ import passport from 'passport';
 // Import routes
 // import { bookingRoutes, userRoutes } from './routes';
 import { config } from './config';
-import { adminHotelRoutes, aminitiesRoutes, authRoutes, otpRoutes, providerHotelRoutes, roleRoutes } from './routes';
-import { role } from './db/schema';
+import {
+    adminHotelRoutes,
+    aminitiesRoutes,
+    authRoutes,
+    bookingRoutes,
+    favoriteRoutes,
+    otpRoutes,
+    profileRoutes,
+    providerHotelRoutes,
+    providerPropertyRoutes,
+    publicPropertyRoutes,
+    reviewRoutes,
+    roleRoutes,
+} from './routes';
 
 // import propertyRoutes from './routes/property.route';
 // import paymentRoutes from './routes/payment.route';
@@ -78,7 +90,13 @@ app.use('/api/otp', otpRoutes);
 app.use('/api/role', roleRoutes);
 app.use('/api/admin/hotel', adminHotelRoutes);
 app.use('/api/provider', providerHotelRoutes);
+app.use('/api/provider', providerPropertyRoutes);
 app.use('/api/admin/aminities', aminitiesRoutes);
+app.use('/api/public', publicPropertyRoutes);
+app.use('/api/users', profileRoutes);
+app.use('/api/favorites', favoriteRoutes);
+app.use('/api', reviewRoutes);
+app.use('/api/bookings', bookingRoutes);
 
 
 
